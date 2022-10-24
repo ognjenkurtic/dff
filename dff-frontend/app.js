@@ -5,9 +5,13 @@ const btnSendSig = document.getElementById("send_signatures");
 const pSignature1 = document.getElementById("potpis_1");
 const pSignature2 = document.getElementById("potpis_2");
 const pSignature3 = document.getElementById("potpis_3");
+const result = document.getElementById("result");
+result.hidden = true;
 
 btnGenSig.addEventListener("click", function (event) {
 	event.preventDefault();
+    result.hidden = true;
+
     const matBrojDob = form.elements["mat_broj_dobavljac"].value;
     const matBrojKupac = form.elements["mat_broj_kupac"].value;
     const brojFakture = form.elements["broj_fakture"].value;
@@ -28,6 +32,10 @@ btnGenSig.addEventListener("click", function (event) {
 btnSendSig.addEventListener("click", function (event) {
 	event.preventDefault();
     console.log("TODO: fire away");
+
+    result.textContent = "Faktura je tu";
+    result.className = "toast-failure";
+    result.hidden = false;
 });
 
  function hashCode(str) {
