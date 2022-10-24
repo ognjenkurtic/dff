@@ -3,6 +3,8 @@ const form = document.getElementById("invoice_data");
 const btnGenSig = document.getElementById("generate_signatures");
 const btnSendSig = document.getElementById("send_signatures");
 const pSignature1 = document.getElementById("potpis_1");
+const pSignature2 = document.getElementById("potpis_2");
+const pSignature3 = document.getElementById("potpis_3");
 
 btnGenSig.addEventListener("click", function (event) {
 	event.preventDefault();
@@ -15,7 +17,12 @@ btnGenSig.addEventListener("click", function (event) {
 
     const signature1 = hashCode(matBrojDob + matBrojKupac + brojFakture + datumIzdavanja + datumValute + iznos);
     pSignature1.textContent = signature1;
-    console.log(signature1);
+
+    const signature2 = hashCode(matBrojDob + matBrojKupac + datumIzdavanja + datumValute + iznos);
+    pSignature2.textContent = signature2;
+
+    const signature3 = hashCode(matBrojDob + matBrojKupac + brojFakture + datumIzdavanja + datumValute);
+    pSignature3.textContent = signature3;
 });
 
 btnSendSig.addEventListener("click", function (event) {
