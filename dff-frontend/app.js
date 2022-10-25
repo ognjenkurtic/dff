@@ -6,7 +6,8 @@ const pSignature1 = document.getElementById("potpis_1");
 const pSignature2 = document.getElementById("potpis_2");
 const pSignature3 = document.getElementById("potpis_3");
 const result = document.getElementById("result");
-result.hidden = true;
+let isDuplicate = false;
+result.hidden = !isDuplicate;
 
 btnGenSig.addEventListener("click", function (event) {
 	event.preventDefault();
@@ -31,11 +32,41 @@ btnGenSig.addEventListener("click", function (event) {
 
 btnSendSig.addEventListener("click", function (event) {
 	event.preventDefault();
-    console.log("TODO: fire away");
 
-    result.textContent = "Faktura je tu";
-    result.className = "toast-failure";
-    result.hidden = false;
+    fetch('http://127.0.0.1:3000/sigs', {
+    	method: 'POST',
+        body: {
+            from: "finspot",
+            signature1: pSignature1.textContent,
+            signature2: pSignature2.textContent,
+            signature3: pSignature3.textContent
+        }
+    }).then(function (response) {
+        // The API call was successful!
+        if (response.ok) {
+            return response.json();
+        } else {
+            return Promise.reject(response);
+        }
+    }).then(function (data) {
+        // This is the JSON from our response
+        isDuplicate = data.isDuplicate;
+        console.log(data);
+    }).catch(function (err) {
+        // There was an error
+        console.warn('Something went wrong.', err);
+    });
+
+    
+    result.hidden = !isDuplicate;
+
+    if (isDuplicate) {
+        result.textContent = "Faktura je duplikat!";
+        result.className = "toast-failure";
+    } else {
+        result.textContent = "";
+        result.className = "toast-success";
+    }
 });
 
  function hashCode(str) {
