@@ -6,7 +6,6 @@ const pSignature1 = document.getElementById("potpis_1");
 const pSignature2 = document.getElementById("potpis_2");
 const pSignature3 = document.getElementById("potpis_3");
 const result = document.getElementById("result");
-let isDuplicate = false;
 
 btnGenSig.addEventListener("click", function (event) {
 	event.preventDefault();
@@ -21,12 +20,15 @@ btnGenSig.addEventListener("click", function (event) {
 
     const signature1 = hashCode(matBrojDob + matBrojKupac + brojFakture + datumIzdavanja + datumValute + iznos);
     pSignature1.textContent = signature1;
+    pSignature1.className = '';
 
     const signature2 = hashCode(matBrojDob + matBrojKupac + datumIzdavanja + datumValute + iznos);
     pSignature2.textContent = signature2;
+    pSignature2.className = '';
 
     const signature3 = hashCode(matBrojDob + matBrojKupac + brojFakture + datumIzdavanja + datumValute);
     pSignature3.textContent = signature3;
+    pSignature3.className = '';
 });
 
 btnSendSig.addEventListener("click", function (event) {
@@ -53,19 +55,31 @@ btnSendSig.addEventListener("click", function (event) {
             return Promise.reject(response);
         }
     }).then(function (data) {
-        isDuplicate = data.isDuplicate;
 
-        if (isDuplicate) {
+        if (data.isDuplicate) {
             result.textContent = "Faktura je bila predmet faktoringa.";
-            result.className = "toast-failure";
+            result.className = "signature-alert";
+
+            if (data.duplicateSignature1 == pSignature1.textContent) {
+                pSignature1.className = "signature-alert";
+            }
+
+            if (data.duplicateSignature2 == pSignature2.textContent) {
+                pSignature2.className = "signature-alert";
+            }
+
+            if (data.duplicateSignature3 == pSignature3.textContent) {
+                pSignature3.className = "signature-alert";
+            }
+
         } else {
             result.textContent = "Faktura nije bila predmet faktoringa.";
-            result.className = "toast-success";
+            result.className = "signature-ok";
         }
 
     }).catch(function (err) {
         result.textContent = "Došlo je do greške!";
-        result.className = "toast-failure";
+        result.className = "signature-alert";
         console.warn('Something went wrong.', err);
     });
 });

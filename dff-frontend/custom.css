@@ -1,7 +1,7 @@
-.toast-failure {
+.signature-alert {
     color: red;
 }
 
-.toast-success {
+.signature-ok {
     color: green;
 }
