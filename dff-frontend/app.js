@@ -7,11 +7,10 @@ const pSignature2 = document.getElementById("potpis_2");
 const pSignature3 = document.getElementById("potpis_3");
 const result = document.getElementById("result");
 let isDuplicate = false;
-result.hidden = !isDuplicate;
 
 btnGenSig.addEventListener("click", function (event) {
 	event.preventDefault();
-    result.hidden = true;
+    result.textContent = '';
 
     const matBrojDob = form.elements["mat_broj_dobavljac"].value;
     const matBrojKupac = form.elements["mat_broj_kupac"].value;
@@ -33,40 +32,42 @@ btnGenSig.addEventListener("click", function (event) {
 btnSendSig.addEventListener("click", function (event) {
 	event.preventDefault();
 
+    const requestHeaders = new Headers();
+    requestHeaders.append('Content-Type', 'application/json');
+
+    const requestBody = {
+        from: "finspot",
+        signature1: pSignature1.textContent,
+        signature2: pSignature2.textContent,
+        signature3: pSignature3.textContent
+    }
+
     fetch('http://127.0.0.1:3000/sigs', {
+        headers: requestHeaders,
     	method: 'POST',
-        body: {
-            from: "finspot",
-            signature1: pSignature1.textContent,
-            signature2: pSignature2.textContent,
-            signature3: pSignature3.textContent
-        }
+        body: JSON.stringify(requestBody),
     }).then(function (response) {
-        // The API call was successful!
         if (response.ok) {
             return response.json();
         } else {
             return Promise.reject(response);
         }
     }).then(function (data) {
-        // This is the JSON from our response
         isDuplicate = data.isDuplicate;
-        console.log(data);
+
+        if (isDuplicate) {
+            result.textContent = "Faktura je bila predmet faktoringa.";
+            result.className = "toast-failure";
+        } else {
+            result.textContent = "Faktura nije bila predmet faktoringa.";
+            result.className = "toast-success";
+        }
+
     }).catch(function (err) {
-        // There was an error
+        result.textContent = "Došlo je do greške!";
+        result.className = "toast-failure";
         console.warn('Something went wrong.', err);
     });
-
-    
-    result.hidden = !isDuplicate;
-
-    if (isDuplicate) {
-        result.textContent = "Faktura je duplikat!";
-        result.className = "toast-failure";
-    } else {
-        result.textContent = "";
-        result.className = "toast-success";
-    }
 });
 
  function hashCode(str) {
