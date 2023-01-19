@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "backend": {
+    "dffbackend": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
