@@ -1,10 +1,10 @@
 # BACKEND
 
-backend/.vs
-backend/Logs
-backend/bin
-backend/obj
-backend/.DS_Store
+dffbackend/.vs
+dffbackend/Logs
+dffbackend/bin
+dffbackend/obj
+dffbackend/.DS_Store
 **/.DS_Store
 /.vscode
 
