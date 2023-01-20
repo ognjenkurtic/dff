@@ -1,6 +1,7 @@
 using System.Reflection;
 using dffbackend.Filters;
 using dffbackend.Models;
+using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -28,9 +29,16 @@ builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 // Register interfaces
 
 builder.Services.AddControllers();
+builder.Services.AddFluentValidation(conf =>
+{
+    conf.RegisterValidatorsFromAssembly(typeof(Program).Assembly);
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
 
 var app = builder.Build();
 
