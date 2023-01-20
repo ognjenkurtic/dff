@@ -1,4 +1,6 @@
 using System.Reflection;
+using dffbackend.Filters;
+using dffbackend.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -11,13 +13,13 @@ builder.Host.UseSerilog((ctx, lc) => lc
         .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
         .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Information)
         .Enrich.FromLogContext()
-        .WriteTo.File("Logs/dff.txt", rollingInterval: RollingInterval.Day)
+        .WriteTo.File("Logs/dffapp.txt", rollingInterval: RollingInterval.Day)
         .WriteTo.Console()
         .ReadFrom.Configuration(ctx.Configuration));
 
 // Add services to the container.
 string connectionString = builder.Configuration["ConnectionStrings:Mysql"];
-// builder.Services.AddDbContext<SigmaRiskContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+builder.Services.AddDbContext<DffContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 // add identity here if needed
 
@@ -34,6 +36,12 @@ var app = builder.Build();
 
 app.UseSerilogRequestLogging();
 
+using (var scope = app.Services.CreateScope())
+{
+    var dataContext = scope.ServiceProvider.GetRequiredService<DffContext>();
+    dataContext.Database.Migrate();
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -42,12 +50,14 @@ if (app.Environment.IsDevelopment())
         {
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "dff-api v1");
             c.RoutePrefix = string.Empty;
+            c.EnableFilter();
         });
 }
 
+
 app.UseHttpsRedirection();
 
-// use authentication here
+app.UseAuthentication();
 
 app.UseAuthorization();
 
