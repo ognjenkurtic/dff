@@ -24,7 +24,9 @@ public class SignaturesAgent : ISignaturesAgent
         var signaturesDict = new Dictionary<string, string>()
         {
             { nameof(mappedSignatureSet.Signature1), mappedSignatureSet.Signature1 },
-            { nameof(mappedSignatureSet.Signature2), mappedSignatureSet.Signature2 }
+            { nameof(mappedSignatureSet.Signature2), mappedSignatureSet.Signature2 },
+            { nameof(mappedSignatureSet.Signature3), mappedSignatureSet.Signature3 },
+            { nameof(mappedSignatureSet.Signature4), mappedSignatureSet.Signature4 }
         };
 
         var result = new SignatureSetResponseDto();
