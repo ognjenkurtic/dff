@@ -58,7 +58,6 @@ public class SignaturesController : BaseController
     [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
     public async Task<IActionResult> CheckSignaturesAndStore([FromBody] CheckSignaturesDto body)
     {
-        // 2 endpoint - proverava duplikate i storuje taj entry (checkandstore)
         var result = await Mediator.Send(new CheckSignaturesAndStoreCommand
         {
             SignaturesSets = body.SignaturesSets
@@ -67,6 +66,3 @@ public class SignaturesController : BaseController
         return Ok(result);
     }
 }
-
-
-// 3 endpoint - CRUD nad faktorima (flag obrisan) (ovo ide u FactoringCompanyController)
