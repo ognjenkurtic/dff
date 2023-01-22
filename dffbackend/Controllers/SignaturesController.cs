@@ -1,4 +1,5 @@
 using System.Net;
+using AutoMapper;
 using dffbackend.BusinessLogic.Signatures.Commands;
 using dffbackend.DTOs;
 using dffbackend.Filters;
@@ -22,7 +23,7 @@ public class SignaturesController : BaseController
     /// <summary>
     /// Checks signature sets for duplicates
     /// </summary>
-    /// <param name="body">CheckSignaturesDto containing list of signature sets</param>
+    /// <param name="body">CheckSignaturesDto containing a list of signature sets</param>
     /// <response code="200">Ok</response>
     /// <response code="200">OkObject</response>
     /// <response code="400">Invalid input</response>
@@ -34,14 +35,13 @@ public class SignaturesController : BaseController
     [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
     public async Task<IActionResult> CheckSignatures([FromBody] CheckSignaturesDto body)
     {
-        // proverava duplikate i vraca 200 ok ili 200 ok sa telom koji kaze sta je duplikat od koga, faktor kontakt
         var result = await Mediator.Send(new CheckSignaturesCommand
         {
             SignaturesSets = body.SignaturesSets
         });
 
         return Ok(result);
-    }
+    }  
 }
 
 // 2 endpoint - proverava duplikate i storuje taj entry (checkandstore)

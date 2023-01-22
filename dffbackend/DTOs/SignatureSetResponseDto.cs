@@ -3,10 +3,10 @@ namespace dffbackend.DTOs;
 public class SignatureSetResponseDto
 {
     public bool SignatureSetHasDuplicates { get; set; }
-    public List<SignatureResponseDto> SignatureResponses { get; set; }
+    public List<SignatureDuplicateResponseDto> SignatureDuplicateResponses { get; set; }
 }
 
-public class SignatureResponseDto
+public class SignatureDuplicateResponseDto
 {
     public string DuplicateSignature { get; set; }
 

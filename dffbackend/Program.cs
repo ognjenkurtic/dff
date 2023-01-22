@@ -1,4 +1,5 @@
 using System.Reflection;
+using dffbackend.BusinessLogic.Signatures.Agents;
 using dffbackend.Filters;
 using dffbackend.Models;
 using FluentValidation.AspNetCore;
@@ -25,8 +26,10 @@ builder.Services.AddDbContext<DffContext>(options => options.UseMySql(connection
 // add identity here if needed
 
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // Register interfaces
+builder.Services.AddScoped<ISignaturesAgent, SignaturesAgent>();
 
 builder.Services.AddControllers();
 builder.Services.AddFluentValidation(conf =>
