@@ -21,6 +21,8 @@ public class FactoringCompany
 
     public List<Signature> Signatures { get; set; }
 
+    public bool? IsDeleted { get; set; }
+
     public FactoringCompany()
     {
         Signatures = new List<Signature>();
