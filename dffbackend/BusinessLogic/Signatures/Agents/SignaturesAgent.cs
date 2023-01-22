@@ -20,7 +20,7 @@ public class SignaturesAgent : ISignaturesAgent
 
     public async Task<SignatureSetResponseDto> CheckSignatureSetForDuplicates(SignatureSetDto signatureSetDto)
     {
-        var mappedSignatureSet = _mapper.Map<SignatureSetDto, Signature>(signatureSetDto);
+        var mappedSignatureSet = _mapper.Map<Signature>(signatureSetDto);
         var signaturesDict = new Dictionary<string, string>()
         {
             { nameof(mappedSignatureSet.Signature1), mappedSignatureSet.Signature1 },
