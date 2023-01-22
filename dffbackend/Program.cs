@@ -23,8 +23,6 @@ builder.Host.UseSerilog((ctx, lc) => lc
 string connectionString = builder.Configuration["ConnectionStrings:Mysql"];
 builder.Services.AddDbContext<DffContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-// add identity here if needed
-
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -32,12 +30,12 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<ISignaturesAgent, SignaturesAgent>();
 
 builder.Services.AddControllers();
+// TODO: compiler throws warning AddFluentValidation is deprecated, however other methods won't work. Investigate this later on.
 builder.Services.AddFluentValidation(conf =>
 {
     conf.RegisterValidatorsFromAssembly(typeof(Program).Assembly);
 });
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

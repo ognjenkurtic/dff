@@ -14,12 +14,6 @@ public class DffContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        // modelBuilder.Ignore<IdentityRole>();
-        // modelBuilder.Ignore<IdentityUserToken<string>>();
-        // modelBuilder.Ignore<IdentityUserRole<string>>();
-        // modelBuilder.Ignore<IdentityUserLogin<string>>();
-        // modelBuilder.Ignore<IdentityUserClaim<string>>();
-        // modelBuilder.Ignore<IdentityRoleClaim<string>>();
 
         modelBuilder.Entity<FactoringCompany>().HasData(
             new FactoringCompany()
@@ -30,7 +24,5 @@ public class DffContext : DbContext
                 ApiKey = "P6xSXlImETYMpojIUHE0e7E12byrqIjYUFzDTLzKBzTWf2qWV57fu2lej8CmQElN"
             }
         );
-
-        // Add specifics about relationships here if needed
     }
 }
