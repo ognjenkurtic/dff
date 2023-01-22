@@ -1,3 +1,4 @@
+using AutoMapper;
 using dffbackend.DTOs;
 using dffbackend.Models;
 using Microsoft.EntityFrameworkCore;
@@ -8,66 +9,43 @@ public class SignaturesAgent : ISignaturesAgent
 {
     private readonly ILogger<SignaturesAgent> _logger;
     private readonly DffContext _dbContext;
+    private readonly IMapper _mapper;
 
-    public SignaturesAgent(ILogger<SignaturesAgent> logger, DffContext dbContext)
+    public SignaturesAgent(ILogger<SignaturesAgent> logger, DffContext dbContext, IMapper mapper)
     {
         _logger = logger;
         _dbContext = dbContext;
+        _mapper = mapper;
     }
 
-    public async Task<SignatureSetResponseDto> CheckSignatureSetForDuplicates(SignatureSetDto signatureSet)
+    public async Task<SignatureSetResponseDto> CheckSignatureSetForDuplicates(SignatureSetDto signatureSetDto)
     {
+        var mappedSignatureSet = _mapper.Map<SignatureSetDto, Signature>(signatureSetDto);
+        var signaturesDict = new Dictionary<string, string>()
+        {
+            { nameof(mappedSignatureSet.Signature1), mappedSignatureSet.Signature1 },
+            { nameof(mappedSignatureSet.Signature2), mappedSignatureSet.Signature2 }
+        };
+
         var result = new SignatureSetResponseDto();
 
-        var s1 = await _dbContext.Signatures.Include(s => s.FactoringCompany).FirstOrDefaultAsync(s => s.Signature1.Trim() == signatureSet.Signature1);
-        if (s1 is not null)
+        foreach (var signature in signaturesDict)
         {
-            result.SignatureResponses.Add(new SignatureResponseDto()
+            var foundSignature = await _dbContext.Signatures.Include(s => s.FactoringCompany).FirstOrDefaultAsync(
+                s => s.GetType().GetProperty(signature.Key).GetValue(s, null).ToString() == signature.Value.Trim());
+
+            if (foundSignature is not null)
             {
-                DuplicateSignature = s1.Signature1,
-                FactoringCompanyName = s1.FactoringCompany.Name,
-                Email = s1.FactoringCompany.Email
-            });
-        }
-        var s2 = await _dbContext.Signatures.Include(s => s.FactoringCompany).FirstOrDefaultAsync(s => s.Signature2.Trim() == signatureSet.Signature2);
-        if (s2 is not null)
-        {
-            result.SignatureResponses.Add(new SignatureResponseDto()
-            {
-                DuplicateSignature = s2.Signature2,
-                FactoringCompanyName = s2.FactoringCompany.Name,
-                Email = s2.FactoringCompany.Email
-            });
-        }
-        var s3 = await _dbContext.Signatures.Include(s => s.FactoringCompany).FirstOrDefaultAsync(s => s.Signature3.Trim() == signatureSet.Signature3);
-        if (s3 is not null)
-        {
-            result.SignatureResponses.Add(new SignatureResponseDto()
-            {
-                DuplicateSignature = s3.Signature3,
-                FactoringCompanyName = s3.FactoringCompany.Name,
-                Email = s3.FactoringCompany.Email
-            });
-        }
-        var s4 = await _dbContext.Signatures.Include(s => s.FactoringCompany).FirstOrDefaultAsync(s => s.Signature4.Trim() == signatureSet.Signature4);
-        if (s4 is not null)
-        {
-            result.SignatureResponses.Add(new SignatureResponseDto()
-            {
-                DuplicateSignature = s4.Signature4,
-                FactoringCompanyName = s4.FactoringCompany.Name,
-                Email = s4.FactoringCompany.Email
-            });
+                result.SignatureDuplicateResponses.Add(new SignatureDuplicateResponseDto()
+                {
+                    DuplicateSignature = foundSignature.GetType().GetProperty(signature.Key).GetValue(foundSignature, null).ToString(),
+                    FactoringCompanyName = foundSignature.FactoringCompany.Name,
+                    Email = foundSignature.FactoringCompany.Email
+                });
+            }
         }
 
-        if (result.SignatureResponses.Any())
-        {
-            result.SignatureSetHasDuplicates = true;
-        }
-        else
-        {
-            result.SignatureSetHasDuplicates = false;
-        }
+        result.SignatureSetHasDuplicates = result.SignatureDuplicateResponses.Any();
 
         return result;
     }
