@@ -38,7 +38,7 @@ public class CheckSignaturesAndStoreCommandHandler : IRequestHandler<CheckSignat
         {
             result.Add(await _signaturesAgent.CheckSignatureSetForDuplicates(signatureSet));
 
-            var signatureToAdd = _mapper.Map<SignatureSetDto, Signature>(signatureSet);
+            var signatureToAdd = _mapper.Map<Signature>(signatureSet);
             // TODO: Should we store all signatures no matter if duplicates are found for some of them, or we store only non-duplicate ones?
             // TODO: Assign here the factoring company to the signature
             await _dbContext.Signatures.AddAsync(signatureToAdd);
