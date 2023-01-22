@@ -38,9 +38,12 @@ public class SignaturesAgent : ISignaturesAgent
 
             if (foundSignature is not null)
             {
+                var duplicateSignature = foundSignature.GetType().GetProperty(signature.Key).GetValue(foundSignature, null).ToString();
+                _logger.LogWarning($"Pronađen duplikat potpisa: {duplicateSignature}!");
+
                 result.SignatureDuplicateResponses.Add(new SignatureDuplicateResponseDto()
                 {
-                    DuplicateSignature = foundSignature.GetType().GetProperty(signature.Key).GetValue(foundSignature, null).ToString(),
+                    DuplicateSignature = duplicateSignature,
                     FactoringCompanyName = foundSignature.FactoringCompany.Name,
                     Email = foundSignature.FactoringCompany.Email
                 });
