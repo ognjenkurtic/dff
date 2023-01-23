@@ -1,12 +1,12 @@
-using AutoMapper;
 using dffbackend.BusinessLogic.Signatures.Agents;
-using dffbackend.DTOs;
+using dffbackend.BusinessLogic.Signatures.DTOs;
 using MediatR;
 
 namespace dffbackend.BusinessLogic.Signatures.Commands;
 
 public class CheckSignaturesCommand : IRequest<List<CheckDuplicatesResponseDto>>
 {
+    public string RequesterId { get; set; }
     public List<SignatureSetDto> SignaturesSets { get; set; }
 }
 
@@ -27,7 +27,7 @@ public class CheckSignaturesCommandHandler : IRequestHandler<CheckSignaturesComm
         
         foreach (var signatureSet in request.SignaturesSets)
         {
-            result.Add(await _signaturesAgent.CheckSignatureSetForDuplicates(signatureSet));   
+            result.Add(await _signaturesAgent.CheckSignatureSetForDuplicates(request.RequesterId, signatureSet));   
         }
 
         return result;

@@ -1,4 +1,4 @@
-using dffbackend.DTOs;
+using dffbackend.BusinessLogic.Signatures.DTOs;
 using FluentValidation;
 
 namespace dffbackend.Validators.Signatures;

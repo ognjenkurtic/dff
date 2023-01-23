@@ -1,9 +1,7 @@
-namespace dffbackend.DTOs;
+namespace dffbackend.BusinessLogic.FactoringCompanies.DTOs;
 
-public class UpdateFactoringCompanyDto
+public class CreateFactoringCompanyDto
 {
-    public Guid Id { get; set; }
-
     public string Name { get; set; }
 
     public string Email { get; set; }

@@ -1,4 +1,4 @@
-namespace dffbackend.DTOs;
+namespace dffbackend.BusinessLogic.Signatures.DTOs;
 
 public class CheckSignaturesDto
 {

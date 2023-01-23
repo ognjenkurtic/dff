@@ -1,6 +1,6 @@
 using AutoMapper;
 using dffbackend.BusinessLogic.Signatures.Agents;
-using dffbackend.DTOs;
+using dffbackend.BusinessLogic.Signatures.DTOs;
 using dffbackend.Models;
 using MediatR;
 
@@ -8,7 +8,7 @@ namespace dffbackend.BusinessLogic.Signatures.Commands;
 
 public class CheckSignaturesAndStoreCommand : IRequest<List<CheckDuplicatesResponseDto>>
 {
-    // TODO: After implementing issue #4 (fetching factoring company making the request), expand inputs with the factoring company object (or id)
+    public string RequesterId { get; set; }
     public List<SignatureSetDto> SignaturesSets { get; set; }
 }
 
@@ -32,25 +32,25 @@ public class CheckSignaturesAndStoreCommandHandler : IRequestHandler<CheckSignat
 
     public async Task<List<CheckDuplicatesResponseDto>> Handle(CheckSignaturesAndStoreCommand request, CancellationToken cancellationToken)
     {
-        var result = new List<CheckDuplicatesResponseDto>();
+        var results = new List<CheckDuplicatesResponseDto>();
 
         foreach (var signatureSet in request.SignaturesSets)
         {
-            var checkDuplicatesResponse = await _signaturesAgent.CheckSignatureSetForDuplicates(signatureSet);
-            result.Add(checkDuplicatesResponse);
+            var checkDuplicatesResponse = await _signaturesAgent.CheckSignatureSetForDuplicates(request.RequesterId, signatureSet);
+            results.Add(checkDuplicatesResponse);
 
             if (checkDuplicatesResponse.HasDuplicates)
             {
-                // We do not store duplicates in the db becuase they are not going to be financed
+                // We do not store duplicates in the db because they are not going to be financed
                 // Db should contain only signatures of financed invoices
                 continue;
             }
 
-            // TODO: Assign here the factoring company to the signature
-            await _dbContext.Signatures.AddAsync(_mapper.Map<Signature>(signatureSet));
+            await _signaturesAgent.StoreSignatureSet(request.RequesterId, _mapper.Map<Signature>(signatureSet));
         }
 
         await _dbContext.SaveChangesAsync();
-        return result;
+        
+        return results;
     }
 }

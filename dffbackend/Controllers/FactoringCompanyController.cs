@@ -1,10 +1,7 @@
 using System.Net;
-using AutoMapper;
 using dffbackend.BusinessLogic.FactoringCompanies.Commands;
-using dffbackend.BusinessLogic.Signatures.Commands;
-using dffbackend.DTOs;
+using dffbackend.BusinessLogic.FactoringCompanies.DTOs;
 using dffbackend.Filters;
-using dffbackend.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dffbackend.Controllers;

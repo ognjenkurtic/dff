@@ -1,5 +1,5 @@
 using AutoMapper;
-using dffbackend.DTOs;
+using dffbackend.BusinessLogic.FactoringCompanies.DTOs;
 using dffbackend.Models;
 
 namespace dffbackend.Profiles;

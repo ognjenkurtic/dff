@@ -1,6 +1,6 @@
 using System.Net;
 using dffbackend.BusinessLogic.Signatures.Commands;
-using dffbackend.DTOs;
+using dffbackend.BusinessLogic.Signatures.DTOs;
 using dffbackend.Filters;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,6 +35,7 @@ public class SignaturesController : BaseController
     {
         var result = await Mediator.Send(new CheckSignaturesCommand
         {
+            RequesterId = CurrentFactoringCompanyId,
             SignaturesSets = body.SignaturesSets
         });
 
@@ -58,6 +59,7 @@ public class SignaturesController : BaseController
     {
         var result = await Mediator.Send(new CheckSignaturesAndStoreCommand
         {
+            RequesterId = CurrentFactoringCompanyId,
             SignaturesSets = body.SignaturesSets
         });
 

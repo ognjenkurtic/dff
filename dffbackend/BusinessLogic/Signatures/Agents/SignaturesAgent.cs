@@ -1,5 +1,5 @@
 using AutoMapper;
-using dffbackend.DTOs;
+using dffbackend.BusinessLogic.Signatures.DTOs;
 using dffbackend.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,47 +18,80 @@ public class SignaturesAgent : ISignaturesAgent
         _mapper = mapper;
     }
 
-    public async Task<CheckDuplicatesResponseDto> CheckSignatureSetForDuplicates(SignatureSetDto signatureSetDto)
+    public async Task<CheckDuplicatesResponseDto> CheckSignatureSetForDuplicates(string requesterId, SignatureSetDto submittedSignatures)
     {
-        var mappedSignatureSet = _mapper.Map<Signature>(signatureSetDto);
-        var signaturesDict = new Dictionary<string, string>()
-        {
-            { nameof(mappedSignatureSet.Signature1), mappedSignatureSet.Signature1 },
-            { nameof(mappedSignatureSet.Signature2), mappedSignatureSet.Signature2 },
-            { nameof(mappedSignatureSet.Signature3), mappedSignatureSet.Signature3 },
-            { nameof(mappedSignatureSet.Signature4), mappedSignatureSet.Signature4 }
-        };
+        var results = new CheckDuplicatesResponseDto();
 
-        var result = new CheckDuplicatesResponseDto();
-
-        foreach (var signature in signaturesDict)
-        {
-            var entryWithDuplicateSignature = await _dbContext.Signatures
+        var entryWithDuplicateSignature = await _dbContext.Signatures
                 .Include(s => s.FactoringCompany)
                 .FirstOrDefaultAsync(s => 
-                    s.GetType().GetProperty(signature.Key).GetValue(s, null).ToString() == signature.Value.Trim());
+                    s.Signature1 == submittedSignatures.Signature1 ||
+                        s.Signature2 == submittedSignatures.Signature2 ||
+                            s.Signature3 == submittedSignatures.Signature3 ||
+                                s.Signature4 == submittedSignatures.Signature4);
+        
+        if (entryWithDuplicateSignature is not null)
+        {
+            CheckExactSignatureDuplicationAndCreateResponse(
+                SignatureType.Signature1,
+                entryWithDuplicateSignature.Signature1, 
+                entryWithDuplicateSignature.FactoringCompany,
+                submittedSignatures.Signature1,
+                results.SignatureDuplicateResponses);
+            
+            CheckExactSignatureDuplicationAndCreateResponse(
+                SignatureType.Signature2,
+                entryWithDuplicateSignature.Signature2, 
+                entryWithDuplicateSignature.FactoringCompany,
+                submittedSignatures.Signature2,
+                results.SignatureDuplicateResponses);
+            
+            CheckExactSignatureDuplicationAndCreateResponse(
+                SignatureType.Signature3,
+                entryWithDuplicateSignature.Signature3, 
+                entryWithDuplicateSignature.FactoringCompany,
+                submittedSignatures.Signature3,
+                results.SignatureDuplicateResponses);
+                
+            CheckExactSignatureDuplicationAndCreateResponse(
+                SignatureType.Signature4,
+                entryWithDuplicateSignature.Signature4, 
+                entryWithDuplicateSignature.FactoringCompany,
+                submittedSignatures.Signature4,
+                results.SignatureDuplicateResponses);
+            
+            results.HasDuplicates = true;
+        };
 
-            if (entryWithDuplicateSignature is not null)
-            {
-                var duplicateSignatureValue = entryWithDuplicateSignature
-                    .GetType()
-                    .GetProperty(signature.Key)
-                    .GetValue(entryWithDuplicateSignature, null)
-                    .ToString();
+        return results;
+    }
 
-                _logger.LogWarning($"Pronađen duplikat potpisa: {duplicateSignatureValue}!");
+    public async Task StoreSignatureSet(string requesterId, Signature signatureSet)
+    {
+        signatureSet.FactoringCompanyId = new Guid(requesterId);
+        await _dbContext.Signatures.AddAsync(signatureSet);
+    }
 
-                result.SignatureDuplicateResponses.Add(new SignatureDuplicateResponseDto()
-                {
-                    DuplicateSignature = duplicateSignatureValue,
-                    FactoringCompanyName = entryWithDuplicateSignature.FactoringCompany.Name,
-                    Email = entryWithDuplicateSignature.FactoringCompany.Email
-                });
-            }
+    private void CheckExactSignatureDuplicationAndCreateResponse(
+        SignatureType signatureType,
+        string existingSignature, 
+        FactoringCompany existingSignatureFactoringCompany, 
+        string candidateSignature,
+        List<SignatureDuplicateResponseDto> results)
+    {
+        if (existingSignature != candidateSignature)
+        {
+            return;
         }
 
-        result.HasDuplicates = result.SignatureDuplicateResponses.Any();
-
-        return result;
+        _logger.LogWarning($"Pronađen duplikat potpisa tipa {signatureType}. Vrednost: {candidateSignature}!");
+        
+        results.Add(new SignatureDuplicateResponseDto()
+        {
+            SignatureType = signatureType,
+            DuplicateSignature = candidateSignature,
+            FactoringCompanyName = existingSignatureFactoringCompany.Name,
+            Email = existingSignatureFactoringCompany.Email
+        });
     }
 }

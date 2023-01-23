@@ -1,8 +1,10 @@
-using dffbackend.DTOs;
+using dffbackend.BusinessLogic.Signatures.DTOs;
+using dffbackend.Models;
 
 namespace dffbackend.BusinessLogic.Signatures.Agents;
 
 public interface ISignaturesAgent
 {
-    Task<CheckDuplicatesResponseDto> CheckSignatureSetForDuplicates (SignatureSetDto signatureSet);
+    Task<CheckDuplicatesResponseDto> CheckSignatureSetForDuplicates(string requesterId, SignatureSetDto signatureSet);
+    Task StoreSignatureSet(string requesterId, Signature signatureSet);
 }
