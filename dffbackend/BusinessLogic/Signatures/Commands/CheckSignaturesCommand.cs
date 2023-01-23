@@ -5,12 +5,12 @@ using MediatR;
 
 namespace dffbackend.BusinessLogic.Signatures.Commands;
 
-public class CheckSignaturesCommand : IRequest<List<SignatureSetResponseDto>>
+public class CheckSignaturesCommand : IRequest<List<CheckDuplicatesResponseDto>>
 {
     public List<SignatureSetDto> SignaturesSets { get; set; }
 }
 
-public class CheckSignaturesCommandHandler : IRequestHandler<CheckSignaturesCommand, List<SignatureSetResponseDto>>
+public class CheckSignaturesCommandHandler : IRequestHandler<CheckSignaturesCommand, List<CheckDuplicatesResponseDto>>
 {
     private readonly ILogger _logger;
     private readonly ISignaturesAgent _signaturesAgent;
@@ -21,9 +21,9 @@ public class CheckSignaturesCommandHandler : IRequestHandler<CheckSignaturesComm
         _signaturesAgent = signaturesAgent;
     }
 
-    public async Task<List<SignatureSetResponseDto>> Handle(CheckSignaturesCommand request, CancellationToken cancellationToken)
+    public async Task<List<CheckDuplicatesResponseDto>> Handle(CheckSignaturesCommand request, CancellationToken cancellationToken)
     {
-        var result = new List<SignatureSetResponseDto>();
+        var result = new List<CheckDuplicatesResponseDto>();
         
         foreach (var signatureSet in request.SignaturesSets)
         {

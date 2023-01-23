@@ -1,8 +1,8 @@
 namespace dffbackend.DTOs;
 
-public class SignatureSetResponseDto
+public class CheckDuplicatesResponseDto
 {
-    public bool SignatureSetHasDuplicates { get; set; }
+    public bool HasDuplicates { get; set; }
     public List<SignatureDuplicateResponseDto> SignatureDuplicateResponses { get; set; }
 }
 

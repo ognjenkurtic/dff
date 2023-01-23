@@ -18,7 +18,7 @@ public class SignaturesAgent : ISignaturesAgent
         _mapper = mapper;
     }
 
-    public async Task<SignatureSetResponseDto> CheckSignatureSetForDuplicates(SignatureSetDto signatureSetDto)
+    public async Task<CheckDuplicatesResponseDto> CheckSignatureSetForDuplicates(SignatureSetDto signatureSetDto)
     {
         var mappedSignatureSet = _mapper.Map<Signature>(signatureSetDto);
         var signaturesDict = new Dictionary<string, string>()
@@ -29,28 +29,35 @@ public class SignaturesAgent : ISignaturesAgent
             { nameof(mappedSignatureSet.Signature4), mappedSignatureSet.Signature4 }
         };
 
-        var result = new SignatureSetResponseDto();
+        var result = new CheckDuplicatesResponseDto();
 
         foreach (var signature in signaturesDict)
         {
-            var foundSignature = await _dbContext.Signatures.Include(s => s.FactoringCompany).FirstOrDefaultAsync(
-                s => s.GetType().GetProperty(signature.Key).GetValue(s, null).ToString() == signature.Value.Trim());
+            var entryWithDuplicateSignature = await _dbContext.Signatures
+                .Include(s => s.FactoringCompany)
+                .FirstOrDefaultAsync(s => 
+                    s.GetType().GetProperty(signature.Key).GetValue(s, null).ToString() == signature.Value.Trim());
 
-            if (foundSignature is not null)
+            if (entryWithDuplicateSignature is not null)
             {
-                var duplicateSignature = foundSignature.GetType().GetProperty(signature.Key).GetValue(foundSignature, null).ToString();
-                _logger.LogWarning($"Pronađen duplikat potpisa: {duplicateSignature}!");
+                var duplicateSignatureValue = entryWithDuplicateSignature
+                    .GetType()
+                    .GetProperty(signature.Key)
+                    .GetValue(entryWithDuplicateSignature, null)
+                    .ToString();
+
+                _logger.LogWarning($"Pronađen duplikat potpisa: {duplicateSignatureValue}!");
 
                 result.SignatureDuplicateResponses.Add(new SignatureDuplicateResponseDto()
                 {
-                    DuplicateSignature = duplicateSignature,
-                    FactoringCompanyName = foundSignature.FactoringCompany.Name,
-                    Email = foundSignature.FactoringCompany.Email
+                    DuplicateSignature = duplicateSignatureValue,
+                    FactoringCompanyName = entryWithDuplicateSignature.FactoringCompany.Name,
+                    Email = entryWithDuplicateSignature.FactoringCompany.Email
                 });
             }
         }
 
-        result.SignatureSetHasDuplicates = result.SignatureDuplicateResponses.Any();
+        result.HasDuplicates = result.SignatureDuplicateResponses.Any();
 
         return result;
     }

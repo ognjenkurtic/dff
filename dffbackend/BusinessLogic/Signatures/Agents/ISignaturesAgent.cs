@@ -4,5 +4,5 @@ namespace dffbackend.BusinessLogic.Signatures.Agents;
 
 public interface ISignaturesAgent
 {
-    Task<SignatureSetResponseDto> CheckSignatureSetForDuplicates (SignatureSetDto signatureSet);
+    Task<CheckDuplicatesResponseDto> CheckSignatureSetForDuplicates (SignatureSetDto signatureSet);
 }
