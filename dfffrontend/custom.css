@@ -17,7 +17,7 @@ header {
 }
 
 .api {
-    border-bottom: 1px solid #d9d9d9;
+    /* border-bottom: 1px solid #d9d9d9; */
     display: flex;
     justify-content: space-between;
     height: 160px;
@@ -185,4 +185,21 @@ h2 {
 
 .signature-label {
     margin: 0;
+    line-height: 1.5;
+}
+
+.result-error {
+    padding: 10px;
+    background-color: #F7DEE3;
+    border-radius: 5px;
+    font-size: 15px;
+    color: red;
+}
+
+.result-success {
+    padding: 10px;
+    background-color: #D9FCE9;
+    border-radius: 5px;
+    font-size: 15px;
+    color: green;
 }

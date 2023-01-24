@@ -120,7 +120,7 @@ async function processResponse(response) {
 }
 
 async function processErrorResponse(response) {
-    result.className = "signature-alert";
+    result.className = "result-error";
 
     switch (response.status) {
         case 401:
@@ -145,7 +145,7 @@ async function processOkResponse(response) {
     if (responseData.length === 0)
     {
         result.textContent = "Faktura nije bila predmet faktoringa.";
-        result.className = "signature-ok";
+        result.className = "result-success";
         return;
     } 
     
@@ -185,9 +185,9 @@ async function processOkResponse(response) {
         }
 
         result.textContent = `Faktura je bila predmet faktoringa kod ${factorName}. Kontakt email: ${factorEmail}`;
-        result.className = "signature-alert";
+        result.className = "result-error";
     } else {
         result.textContent = "Faktura nije bila predmet faktoringa.";
-        result.className = "signature-ok";
+        result.className = "result-success";
     }
 }
