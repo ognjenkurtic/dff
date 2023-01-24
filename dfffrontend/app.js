@@ -9,6 +9,8 @@ const pSignature3 = document.getElementById("potpis_3");
 const pSignature4 = document.getElementById("potpis_4");
 const result = document.getElementById("result");
 
+const btnClearForm = document.getElementById("clear_form");
+
 btnChkDups.addEventListener("click", async function (event) {
 	event.preventDefault();
 
@@ -36,6 +38,12 @@ btnSendSig.addEventListener("click", async function (event) {
 
     await processResponse(response, true);
 });
+
+btnClearForm.addEventListener("click", async function (event) {
+	event.preventDefault();
+
+    document.getElementById("invoice_data").reset();
+})
 
 async function generateSignatures() {
     cleanupSignaturesAndResult();

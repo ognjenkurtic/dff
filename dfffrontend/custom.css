@@ -66,12 +66,17 @@ input {
     justify-content: space-between;
 }
 
-#generate_signatures {
+#check_duplicates {
     flex-grow: 1;
     margin-right: 10px;
 }
 
-#check_duplicates {
+#send_signatures {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+#clear_form {
     flex-grow: 1;
     margin-right: 10px;
 }
@@ -208,4 +213,11 @@ h2 {
 .api-subtitle,
 .invoice-subtitle {
     font-size: 16px;
+}
+
+#clear_form {
+    background-color: white;
+    border: 1px solid #0d47a1;
+    color: #0d47a1;
+    font-weight: 600;
 }
