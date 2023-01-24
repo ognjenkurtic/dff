@@ -101,6 +101,7 @@ body {
     padding: 0;
     margin: 40px;
     flex-direction: column;
+    align-items: center;
 }
 
 .left-side-wrapper {
@@ -207,4 +208,8 @@ h2 {
     border-radius: 5px;
     font-size: 15px;
     color: green;
+}
+
+.right-side-wrapper {
+    width: 80%;
 }
