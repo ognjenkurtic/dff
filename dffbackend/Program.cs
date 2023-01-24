@@ -1,6 +1,5 @@
 using System.Reflection;
 using dffbackend.BusinessLogic.Signatures.Agents;
-using dffbackend.Filters;
 using dffbackend.Models;
 using FluentValidation.AspNetCore;
 using MediatR;
@@ -8,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
 
+var  corsPolicyName = "_dffCorsPolicy";
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((ctx, lc) => lc
@@ -38,8 +38,16 @@ builder.Services.AddFluentValidation(conf =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-
+builder.Services.AddCors(options => 
+{
+    options.AddPolicy(corsPolicyName, builder => 
+    {
+        builder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
 
@@ -63,6 +71,8 @@ if (app.Environment.IsDevelopment())
         });
 }
 
+
+app.UseCors(corsPolicyName);
 
 app.UseHttpsRedirection();
 

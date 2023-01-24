@@ -10,6 +10,14 @@ public class CheckSignaturesDtoValidator : AbstractValidator<CheckSignaturesDto>
         // TODO: do we need to check if one of signatures 1, 2 or 3 exist, then all others from this group must exist?
         // or if at least signature 4 exists, then we can proceed (this is covered in the rule below)
 
+        RuleFor(x => x.SignaturesSets)
+            .NotNull()
+            .WithMessage("Bar jedan potpis mora biti poslat");
+        
+        RuleFor(x => x.SignaturesSets)
+            .NotEmpty()
+            .WithMessage("Bar jedan potpis mora biti poslat");
+
         RuleForEach(x => x.SignaturesSets).ChildRules(signatureSet =>
             {
                 signatureSet.RuleFor(s => s).Must(s => !string.IsNullOrEmpty(s.Signature4) ||
