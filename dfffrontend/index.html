@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="height:100%";>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,28 +8,56 @@
     <title>DFF</title>
 </head>
 <body>
-  <header>
-    <h1>Softver za sprečavanje duplog finansiranja faktura</h1>
-    <p>Privredna Komora Srbije</p>
-    <p>Sekcija za faktoring</p>
-  </header>
 
-  <div>
-    <section>
-    <h2>API ključ</h2>
-    <form id="auth_data">
-        <p>
-            <label>Vaš API ključ</label>
-            <input type="text" name="api_key">
-        </p>
-    </form>
+  <div class="left-side">
+    <div class="left-side-wrapper">
+        <div class="main-text">
+            <img src="pks.png">
+            <h2 class="left-side-title">Platforma za sprečavanje duplog finansiranja faktura</h2>
+            <span class="left-side-subtitle">Privredna komora Srbije</span>
+            <span class="left-side-subtitle">Sekcija za faktoring</span>
+        </div>
+        <div class="subtext">
+            <p>Potpis 1 sastoji se od svih podataka</p>
+            <p>Potpis 2 sastoji se od matičnih brojeva, datuma i iznosa (slučaj kada se prevara pokuša sa izmenjenim brojem fakture)</p>
+            <p>Potpis 3 sastoji se od matičnih brojeva, datuma i broja fakture (slučaj kada se prevara pokuša sa izmenjenim iznosom fakture)</p>
+            <p>Potpis 4 sastoji se od jedinstvenog broja fakture iz SEFa</p>
+        </div>
+    </div>
+
+  </div>
+  <div class="right-side">
+    <div class="right-side-wrapper">
+
+
+  <div class="api">
+    <section class="first">
+        <h2 class="api-title">API ključ</h2>
+        <!-- <span>Potrebno je da unesete jedinstveni API kljuc</span> -->
+        <form id="auth_data">
+            <p>
+                <label>Vaš API ključ</label>
+                <input type="text" name="api_key">
+            </p>
+        </form>
     </section>
+    <!-- <section>
+        <h2>Upload kroz CSV</h2>
+        <form id="csv_data">
+            <p>
+                <label>Fajl sa podacima faktura</label>
+                <input id="invoice-file" type="file" />
+            </p>
+        </form>
+        </section> -->
   </div>
 
   <div>
     <section>
-        <h2>Podaci fakture</h2>
-        <aside>
+        <h2 class="invoice-title">Podaci fakture</h2>
+        <!-- <span>Potrebno je da unesete podatke fakture za koju zelite da proverite duble financing fraud status</span> -->
+
+        <!-- <aside>
             <p><strong>Potpis 1</strong></p>
             <p id="potpis_1"></p>
             <p><strong>Potpis 2</strong></p>
@@ -38,66 +66,78 @@
             <p id="potpis_3"></p>
             <p><strong>Potpis 4</strong></p>
             <p id="potpis_4"></p>
-        </aside>
+        </aside> -->
         <form id="invoice_data">
-            <p>
-                <label>Matični broj dobavljača</label>
-                <input type="text" name="mat_broj_dobavljac">
-            </p>
-        
-            <p>
-                <label>Matični broj kupca</label>
-                <input type="text" name="mat_broj_kupac">
-            </p>
+            <div class="form-section">
 
-            <p>
-                <label>Broj fakture</label>
-                <input type="text" name="broj_fakture">
-            </p>
-        
-            <p>
-                <label>Datum izdavanja</label>
-                <input type="date" name="datum_izdavanja">
-            </p>
+                <p>
+                    <label>Matični broj dobavljača</label>
+                    <input type="text" name="mat_broj_dobavljac">
+                </p>
+                
+                <p>
+                    <label>Matični broj kupca</label>
+                    <input type="text" name="mat_broj_kupac">
+                </p>
+                <p>
+                    <label>Broj fakture</label>
+                    <input type="text" name="broj_fakture">
+                </p>
+            </div>
 
-            <p>
-                <label>Datum valute</label>
-                <input type="date" name="datum_valute">
-            </p>
+            <div class="form-section">
+                <p>
+                    <label>Datum izdavanja</label>
+                    <input type="date" name="datum_izdavanja">
+                </p>
+                
+                <p>
+                    <label>Datum valute</label>
+                    <input type="date" name="datum_valute">
+                </p>
+                <p>
+                    <label>Iznos</label>
+                    <input type="text" name="iznos">
+                </p>
+            </div>
+            <div class="form-section">
+                <p>
+                    <label>SEF id</label>
+                    <input type="text" name="sef_id">
+                </p>
+            </div>
+            
+            <div class="buttons">
 
-            <p>
-                <label>Iznos</label>
-                <input type="text" name="iznos">
-            </p>
-
-            <p>
-                <label>SEF id</label>
-                <input type="text" name="sef_id">
-            </p>
-        
-            <button id="generate_signatures">Generiši potpise</button>
-            <button id="check_duplicates">Proveri duplikate</button>
-            <button id="send_signatures">Otpremi potpise</button>
-            <cite id="result"></cite>
+                <button id="generate_signatures">Generiši potpise</button>
+                <button id="check_duplicates">Proveri duplikate</button>
+                <button id="send_signatures">Otpremi potpise</button>
+                <cite id="result"></cite>
+            </div>
+            
         </form>
-        <p><i>Potpis 1 sastoji se od svih podataka</i></p>
-        <p><i>Potpis 2 sastoji se od matičnih brojeva, datuma i iznosa (slučaj kada se prevara pokuša sa izmenjenim brojem fakture)</i></p>
-        <p><i>Potpis 3 sastoji se od matičnih brojeva, datuma i broja fakture (slučaj kada se prevara pokuša sa izmenjenim iznosom fakture)</i></p>
-        <p><i>Potpis 4 sastoji se od jedinstvenog broja fakture iz SEFa</i></p>
+        
     </section>
   </div>
 
   <div>
-    <section>
-    <h2>Upload kroz CSV</h2>
-    <form id="csv_data">
-        <p>
-            <label>Fajl sa podacima faktura</label>
-            <input id="invoice-file" type="file" />
-        </p>
-    </form>
-    </section>
+    
+
+    <div class="signatures">
+        <p class="signature-label"><strong>Potpis 1</strong></p>
+        <p id="potpis_1"></p>
+        <p class="signature-label"><strong>Potpis 2</strong></p>
+        <p id="potpis_2"></p>
+        <p class="signature-label"><strong>Potpis 3</strong></p>
+        <p id="potpis_3"></p>
+        <p class="signature-label"><strong>Potpis 4</strong></p>
+        <p id="potpis_4"></p>
+    </div>
   </div>
+</div>
+
+</div>
+
 
   <script src="app.js"></script>
 </body>
