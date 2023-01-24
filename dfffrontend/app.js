@@ -1,7 +1,6 @@
 const authForm = document.getElementById("auth_data");
 const invoiceForm = document.getElementById("invoice_data");
 
-const btnGenSig = document.getElementById("generate_signatures");
 const btnChkDups = document.getElementById("check_duplicates");
 const btnSendSig = document.getElementById("send_signatures");
 const pSignature1 = document.getElementById("potpis_1");
@@ -10,39 +9,12 @@ const pSignature3 = document.getElementById("potpis_3");
 const pSignature4 = document.getElementById("potpis_4");
 const result = document.getElementById("result");
 
-btnGenSig.addEventListener("click", async function (event) {
-	event.preventDefault();
-    result.textContent = '';
-
-    const matBrojDob = invoiceForm.elements["mat_broj_dobavljac"].value;
-    const matBrojKupac = invoiceForm.elements["mat_broj_kupac"].value;
-    const brojFakture = invoiceForm.elements["broj_fakture"].value;
-    const datumIzdavanja = invoiceForm.elements["datum_izdavanja"].value;
-    const datumValute = invoiceForm.elements["datum_valute"].value;
-    const iznos = invoiceForm.elements["iznos"].value;
-    const sefId = invoiceForm.elements["sef_id"].value;
-
-    const signature1 = await hashCode(matBrojDob + matBrojKupac + brojFakture + datumIzdavanja + datumValute + iznos);
-    pSignature1.textContent = signature1;
-    pSignature1.className = '';
-
-    const signature2 = await hashCode(matBrojDob + matBrojKupac + datumIzdavanja + datumValute + iznos);
-    pSignature2.textContent = signature2;
-    pSignature2.className = '';
-
-    const signature3 = await hashCode(matBrojDob + matBrojKupac + brojFakture + datumIzdavanja + datumValute);
-    pSignature3.textContent = signature3;
-    pSignature3.className = '';
-
-    const signature4 = await hashCode(sefId);
-    pSignature4.textContent = signature4;
-    pSignature4.className = '';
-});
-
 btnChkDups.addEventListener("click", async function (event) {
 	event.preventDefault();
 
-    const response = await fetch('http://localhost:5296/api/Signatures/check', {
+    await generateSignatures();
+
+    const response = await fetch('http://localhost:5000/api/Signatures/check', {
         headers: fetchApiKeyAndPrepareHeaders(),
     	method: 'POST',
         body: JSON.stringify(fetchSignaturesAndPrepareBody()),
@@ -54,7 +26,9 @@ btnChkDups.addEventListener("click", async function (event) {
 btnSendSig.addEventListener("click", async function (event) {
 	event.preventDefault();
 
-    const response = await fetch('http://localhost:5296/api/Signatures/checkandstore', {
+    await generateSignatures();
+
+    const response = await fetch('http://localhost:5000/api/Signatures/checkandstore', {
         headers: fetchApiKeyAndPrepareHeaders(),
     	method: 'POST',
         body: JSON.stringify(fetchSignaturesAndPrepareBody()),
@@ -62,6 +36,46 @@ btnSendSig.addEventListener("click", async function (event) {
 
     await processResponse(response);
 });
+
+async function generateSignatures() {
+    result.textContent = '';
+
+    const matBrojDob = invoiceForm.elements["mat_broj_dobavljac"].value;
+    const matBrojKupac = invoiceForm.elements["mat_broj_kupac"].value;
+    const brojFakture = invoiceForm.elements["broj_fakture"].value;
+    const datumIzdavanja = invoiceForm.elements["datum_izdavanja"].value;
+    const datumValute = invoiceForm.elements["datum_valute"].value;
+    const iznos = invoiceForm.elements["iznos"].value;
+    const sefId = invoiceForm.elements["sef_id"].value;
+
+    const signature1Input = matBrojDob + matBrojKupac + brojFakture + datumIzdavanja + datumValute + iznos;
+    if (signature1Input) {
+        const signature1 = await hashCode(signature1Input);
+        pSignature1.textContent = signature1;
+        pSignature1.className = '';
+    }
+
+    const signature2Input = matBrojDob + matBrojKupac + datumIzdavanja + datumValute + iznos;
+    if (signature2Input) {
+        const signature2 = await hashCode(signature2Input);
+        pSignature2.textContent = signature2;
+        pSignature2.className = '';
+    }
+    
+    const signature3Input = matBrojDob + matBrojKupac + brojFakture + datumIzdavanja + datumValute;
+    if (signature3Input) {
+        const signature3 = await hashCode(signature3Input);
+        pSignature3.textContent = signature3;
+        pSignature3.className = '';
+    }
+
+    const signature4Input = sefId;
+    if(signature4Input) {
+        const signature4 = await hashCode(signature4Input);
+        pSignature4.textContent = signature4;
+        pSignature4.className = '';
+    }
+}
 
 async function hashCode(str) {
     console.log(`Applying SHA-256 on the following string: ` + str)
@@ -176,6 +190,4 @@ async function processOkResponse(response) {
         result.textContent = "Faktura nije bila predmet faktoringa.";
         result.className = "signature-ok";
     }
-
-    
 }
