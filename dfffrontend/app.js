@@ -39,7 +39,7 @@ btnGenSig.addEventListener("click", async function (event) {
     pSignature4.className = '';
 });
 
-btnChkDups.addEventListener("click", function (event) {
+btnChkDups.addEventListener("click", async function (event) {
 	event.preventDefault();
 
     const apiKey = authForm.elements["api_key"].value;
@@ -59,46 +59,42 @@ btnChkDups.addEventListener("click", function (event) {
         signatureSets: [signatureSet]
     }
 
-    fetch('http://127.0.0.1:5296/check', {
+    const response = await fetch('http://localhost:5296/api/Signatures/check', {
         headers: requestHeaders,
     	method: 'POST',
         body: JSON.stringify(requestBody),
-    }).then(function (response) {
-        if (response.ok) {
-            return response.json();
-        } else {
-            return Promise.reject(response);
-        }
-    }).then(function (data) {
+    });
 
-        console.log(JSON.stringify(data));
-
-        // if (data.isDuplicate) {
-        //     result.textContent = "Faktura je bila predmet faktoringa.";
-        //     result.className = "signature-alert";
-
-        //     if (data.duplicateSignature1 == pSignature1.textContent) {
-        //         pSignature1.className = "signature-alert";
-        //     }
-
-        //     if (data.duplicateSignature2 == pSignature2.textContent) {
-        //         pSignature2.className = "signature-alert";
-        //     }
-
-        //     if (data.duplicateSignature3 == pSignature3.textContent) {
-        //         pSignature3.className = "signature-alert";
-        //     }
-
-        // } else {
-        //     result.textContent = "Faktura nije bila predmet faktoringa.";
-        //     result.className = "signature-ok";
-        // }
-
-    }).catch(function (err) {
+    if (!response.ok) {
         result.textContent = "Došlo je do greške!";
         result.className = "signature-alert";
-        console.warn('Something went wrong.', err);
-    });
+        console.warn('Something went wrong.', await response.json());
+        return;
+    }
+
+    const responseData = await response.json();
+    console.log(JSON.stringify(responseData));
+
+    // if (data.isDuplicate) {
+    //     result.textContent = "Faktura je bila predmet faktoringa.";
+    //     result.className = "signature-alert";
+
+    //     if (data.duplicateSignature1 == pSignature1.textContent) {
+    //         pSignature1.className = "signature-alert";
+    //     }
+
+    //     if (data.duplicateSignature2 == pSignature2.textContent) {
+    //         pSignature2.className = "signature-alert";
+    //     }
+
+    //     if (data.duplicateSignature3 == pSignature3.textContent) {
+    //         pSignature3.className = "signature-alert";
+    //     }
+
+    // } else {
+    //     result.textContent = "Faktura nije bila predmet faktoringa.";
+    //     result.className = "signature-ok";
+    // }
 });
 
 btnSendSig.addEventListener("click", function (event) {
@@ -121,7 +117,7 @@ btnSendSig.addEventListener("click", function (event) {
         signatureSets: [signatureSet]
     }
 
-    fetch('http://127.0.0.1:5296/checkandstore', {
+    fetch('http://localhost:5296/api/Signatures/checkandstore', {
         headers: requestHeaders,
     	method: 'POST',
         body: JSON.stringify(requestBody),
@@ -159,11 +155,11 @@ btnSendSig.addEventListener("click", function (event) {
     }).catch(function (err) {
         result.textContent = "Došlo je do greške!";
         result.className = "signature-alert";
-        console.warn('Something went wrong.', err);
     });
 });
 
 async function hashCode(str) {
+    console.log(`Applying SHA-256 on the following string: ` + str)
     const textAsBuffer = new TextEncoder().encode(str);
     const hashBuffer = await window.crypto.subtle.digest('SHA-256', textAsBuffer);
     const hashArray = Array.from(new Uint8Array(hashBuffer))
