@@ -39,7 +39,7 @@ btnSendSig.addEventListener("click", async function (event) {
 
 async function generateSignatures() {
     cleanupSignaturesAndResult();
-    
+
     const matBrojDob = invoiceForm.elements["mat_broj_dobavljac"].value;
     const matBrojKupac = invoiceForm.elements["mat_broj_kupac"].value;
     const brojFakture = invoiceForm.elements["broj_fakture"].value;
@@ -148,7 +148,7 @@ async function processOkResponse(response, isStoreAction) {
         result.className = "result-success";
         
         if (isStoreAction) {
-            result.textContent += "Faktura nije bila predmet faktoringa. Potpisi su uspešno sačuvani u bazi.";
+            result.textContent += " Potpisi su uspešno sačuvani u bazi.";
         }
 
         return;
@@ -195,7 +195,7 @@ async function processOkResponse(response, isStoreAction) {
         result.textContent = "Faktura nije bila predmet faktoringa.";
         result.className = "result-success";
         if (isStoreAction) {
-            result.textContent += "Faktura nije bila predmet faktoringa. Potpisi su uspešno sačuvani u bazi.";
+            result.textContent += " Potpisi su uspešno sačuvani u bazi.";
         }
     }
 }
