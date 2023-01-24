@@ -25,10 +25,10 @@ public class SignaturesAgent : ISignaturesAgent
         var entryWithDuplicateSignature = await _dbContext.Signatures
                 .Include(s => s.FactoringCompany)
                 .FirstOrDefaultAsync(s => 
-                    s.Signature1 == submittedSignatures.Signature1 ||
-                        s.Signature2 == submittedSignatures.Signature2 ||
-                            s.Signature3 == submittedSignatures.Signature3 ||
-                                s.Signature4 == submittedSignatures.Signature4);
+                    (s.Signature1 != string.Empty && s.Signature1 == submittedSignatures.Signature1) ||
+                        (s.Signature3 != string.Empty && s.Signature2 == submittedSignatures.Signature2) ||
+                            (s.Signature3 != string.Empty && s.Signature3 == submittedSignatures.Signature3) ||
+                                (s.Signature4 != string.Empty && s.Signature4 == submittedSignatures.Signature4));
         
         if (entryWithDuplicateSignature is not null)
         {

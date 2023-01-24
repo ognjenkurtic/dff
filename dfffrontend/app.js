@@ -20,7 +20,7 @@ btnChkDups.addEventListener("click", async function (event) {
         body: JSON.stringify(fetchSignaturesAndPrepareBody()),
     });
 
-    await processResponse(response);
+    await processResponse(response, false);
 });
 
 btnSendSig.addEventListener("click", async function (event) {
@@ -34,11 +34,11 @@ btnSendSig.addEventListener("click", async function (event) {
         body: JSON.stringify(fetchSignaturesAndPrepareBody()),
     });
 
-    await processResponse(response);
+    await processResponse(response, true);
 });
 
 async function generateSignatures() {
-    result.textContent = '';
+    cleanupSignaturesAndResult();
 
     const matBrojDob = invoiceForm.elements["mat_broj_dobavljac"].value;
     const matBrojKupac = invoiceForm.elements["mat_broj_kupac"].value;
@@ -49,28 +49,28 @@ async function generateSignatures() {
     const sefId = invoiceForm.elements["sef_id"].value;
 
     const signature1Input = matBrojDob + matBrojKupac + brojFakture + datumIzdavanja + datumValute + iznos;
-    if (signature1Input) {
+    if (signature1Input !== undefined && signature1Input.length > 0) {
         const signature1 = await hashCode(signature1Input);
         pSignature1.textContent = signature1;
         pSignature1.className = '';
     }
 
     const signature2Input = matBrojDob + matBrojKupac + datumIzdavanja + datumValute + iznos;
-    if (signature2Input) {
+    if (signature2Input !== undefined && signature2Input.length > 0) {
         const signature2 = await hashCode(signature2Input);
         pSignature2.textContent = signature2;
         pSignature2.className = '';
     }
     
     const signature3Input = matBrojDob + matBrojKupac + brojFakture + datumIzdavanja + datumValute;
-    if (signature3Input) {
+    if (signature3Input !== undefined && signature3Input.length > 0) {
         const signature3 = await hashCode(signature3Input);
         pSignature3.textContent = signature3;
         pSignature3.className = '';
     }
 
     const signature4Input = sefId;
-    if(signature4Input) {
+    if(signature4Input !== undefined && signature4Input.length > 0) {
         const signature4 = await hashCode(signature4Input);
         pSignature4.textContent = signature4;
         pSignature4.className = '';
@@ -110,13 +110,13 @@ function fetchSignaturesAndPrepareBody() {
     return requestBody;
 }
 
-async function processResponse(response) {
+async function processResponse(response, isStoreAction) {
     if (!response.ok) {
         processErrorResponse(response);
         return;
     }
 
-    await processOkResponse(response);
+    await processOkResponse(response, isStoreAction);
 }
 
 async function processErrorResponse(response) {
@@ -137,7 +137,7 @@ async function processErrorResponse(response) {
     console.warn('Došlo je do greške. Full response: ', await response.json());
 }
 
-async function processOkResponse(response) {
+async function processOkResponse(response, isStoreAction) {
     const responseData = await response.json();
     console.log(JSON.stringify(responseData));
 
@@ -146,6 +146,11 @@ async function processOkResponse(response) {
     {
         result.textContent = "Faktura nije bila predmet faktoringa.";
         result.className = "result-success";
+        
+        if (isStoreAction) {
+            result.textContent += " Potpisi su uspešno sačuvani u bazi.";
+        }
+
         return;
     } 
     
@@ -189,5 +194,20 @@ async function processOkResponse(response) {
     } else {
         result.textContent = "Faktura nije bila predmet faktoringa.";
         result.className = "result-success";
+        if (isStoreAction) {
+            result.textContent += " Potpisi su uspešno sačuvani u bazi.";
+        }
     }
+}
+
+function cleanupSignaturesAndResult() {
+    result.textContent = '';
+    pSignature1.textContent = '';
+    pSignature1.className = '';
+    pSignature2.textContent = '';
+    pSignature2.className = '';
+    pSignature3.textContent = '';
+    pSignature3.className = '';
+    pSignature4.textContent = '';
+    pSignature4.className = '';
 }
