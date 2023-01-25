@@ -16,7 +16,7 @@ btnChkDups.addEventListener("click", async function (event) {
 
     await generateSignatures();
 
-    const response = await fetch('http://localhost:5000/api/Signatures/check', {
+    const response = await fetch('https://dff.finspot.rs/api/Signatures/check', {
         headers: fetchApiKeyAndPrepareHeaders(),
     	method: 'POST',
         body: JSON.stringify(fetchSignaturesAndPrepareBody()),
@@ -30,7 +30,7 @@ btnSendSig.addEventListener("click", async function (event) {
 
     await generateSignatures();
 
-    const response = await fetch('http://localhost:5000/api/Signatures/checkandstore', {
+    const response = await fetch('https://dff.finspot.rs/api/Signatures/checkandstore', {
         headers: fetchApiKeyAndPrepareHeaders(),
     	method: 'POST',
         body: JSON.stringify(fetchSignaturesAndPrepareBody()),
