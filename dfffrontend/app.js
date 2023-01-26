@@ -52,7 +52,9 @@ btnChkDups.addEventListener("click", async function (event) {
     const iznos = invoiceForm.elements["iznos"].value;
     const sefId = invoiceForm.elements["sef_id"].value;
 
-    await generateSignatures(matBrojDob, matBrojKupac, brojFakture, datumIzdavanja, datumValute, iznos, sefId);
+    const generatedSignatures = await generateSignatures(matBrojDob, matBrojKupac, brojFakture, datumIzdavanja, datumValute, iznos, sefId);
+
+    showSignatures(generatedSignatures);
 
     const response = await fetch(`${apiUrl}/api/Signatures/check`, {
         headers: fetchApiKeyAndPrepareHeaders(),
@@ -76,7 +78,9 @@ btnSendSig.addEventListener("click", async function (event) {
     const iznos = invoiceForm.elements["iznos"].value;
     const sefId = invoiceForm.elements["sef_id"].value;
 
-    await generateSignatures(matBrojDob, matBrojKupac, brojFakture, datumIzdavanja, datumValute, iznos, sefId);
+    const generatedSignatures = await generateSignatures(matBrojDob, matBrojKupac, brojFakture, datumIzdavanja, datumValute, iznos, sefId);
+
+    showSignatures(generatedSignatures);
 
     const response = await fetch(`${apiUrl}/api/Signatures/checkandstore`, {
         headers: fetchApiKeyAndPrepareHeaders(),
@@ -119,33 +123,32 @@ btnParseCsv.addEventListener("click", async function (event) {
 });
 
 async function generateSignatures(matBrojDob, matBrojKupac, brojFakture, datumIzdavanja, datumValute, iznos, sefId) {
+    let signature1;
+    let signature2;
+    let signature3;
+    let signature4;
+
     const signature1Input = matBrojDob + matBrojKupac + brojFakture + datumIzdavanja + datumValute + iznos;
     if (signature1Input !== undefined && signature1Input.length > 0) {
-        const signature1 = await hashCode(signature1Input);
-        pSignature1.textContent = signature1;
-        pSignature1.className = '';
+        signature1 = await hashCode(signature1Input);
     }
 
     const signature2Input = matBrojDob + matBrojKupac + datumIzdavanja + datumValute + iznos;
     if (signature2Input !== undefined && signature2Input.length > 0) {
-        const signature2 = await hashCode(signature2Input);
-        pSignature2.textContent = signature2;
-        pSignature2.className = '';
+        signature2 = await hashCode(signature2Input);
     }
     
     const signature3Input = matBrojDob + matBrojKupac + brojFakture + datumIzdavanja + datumValute;
     if (signature3Input !== undefined && signature3Input.length > 0) {
-        const signature3 = await hashCode(signature3Input);
-        pSignature3.textContent = signature3;
-        pSignature3.className = '';
+        signature3 = await hashCode(signature3Input);
     }
 
     const signature4Input = sefId;
     if(signature4Input !== undefined && signature4Input.length > 0) {
-        const signature4 = await hashCode(signature4Input);
-        pSignature4.textContent = signature4;
-        pSignature4.className = '';
+        signature4 = await hashCode(signature4Input);
     }
+
+    return { signature1: signature1, signature2: signature2, signature3: signature3, signature4: signature4,  }
 }
 
 async function hashCode(str) {
@@ -154,6 +157,28 @@ async function hashCode(str) {
     const hashBuffer = await window.crypto.subtle.digest('SHA-256', textAsBuffer);
     const hashArray = Array.from(new Uint8Array(hashBuffer))
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function showSignatures(signatures) {
+    if (signatures.signature1 !== undefined) {
+        pSignature1.textContent = signatures.signature1;
+        pSignature1.className = '';
+    }
+
+    if (signatures.signature2 !== undefined) {
+        pSignature2.textContent = signatures.signature2;
+        pSignature2.className = '';
+    }
+
+    if (signatures.signature3 !== undefined) {
+        pSignature3.textContent = signatures.signature3;
+        pSignature3.className = '';
+    }
+
+    if (signatures.signature4 !== undefined) {
+        pSignature4.textContent = signatures.signature4;
+        pSignature4.className = '';
+    }
 }
 
 function fetchApiKeyAndPrepareHeaders() {
