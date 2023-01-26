@@ -1,4 +1,4 @@
-const apiUrl = "http://localhost:6000";
+const apiUrl = "https://dff.finspot.rs";
 
 const authForm = document.getElementById("auth_data");
 const invoiceForm = document.getElementById("invoice_data");
