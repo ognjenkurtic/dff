@@ -5,13 +5,15 @@ const invoiceForm = document.getElementById("invoice_data");
 
 const btnChkDups = document.getElementById("check_duplicates");
 const btnSendSig = document.getElementById("send_signatures");
+const btnClearForm = document.getElementById("clear_form");
+
 const pSignature1 = document.getElementById("potpis_1");
 const pSignature2 = document.getElementById("potpis_2");
 const pSignature3 = document.getElementById("potpis_3");
 const pSignature4 = document.getElementById("potpis_4");
 const result = document.getElementById("result");
 
-const btnClearForm = document.getElementById("clear_form");
+const btnParseCsv = document.getElementById("parse_csv");
 
 handleTabmenuClick('manual-tab');
 
@@ -70,6 +72,22 @@ btnClearForm.addEventListener("click", async function (event) {
 
     document.getElementById("invoice_data").reset();
 })
+
+btnParseCsv.addEventListener("click", async function (event) {
+	event.preventDefault();
+
+    const selectedFile = document.getElementById('invoices_csv_file').files[0];
+
+    let reader = new FileReader();
+
+    reader.onload = (function(theFile) {
+        return function(e) {
+            console.log(JSON.stringify(e.target.result));
+        };
+    })(selectedFile);
+
+    reader.readAsText(selectedFile);
+});
 
 async function generateSignatures() {
     cleanupSignaturesAndResult();
