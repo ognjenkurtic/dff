@@ -76,14 +76,10 @@ input {
     margin-right: 10px;
 }
 
-#clear_form {
-    flex-grow: 1;
-    margin-right: 10px;
-}
-
 #send_signatures {
     flex-grow: 1;
 }
+
 body {
     background-color: #fff;
     display: flex;
@@ -216,8 +212,38 @@ h2 {
 }
 
 #clear_form {
+    flex-grow: 1;
+    margin-right: 10px;
     background-color: white;
     border: 1px solid #0d47a1;
     color: #0d47a1;
     font-weight: 600;
 }
+
+/* TAB STYLES */
+.tab-menu {
+    border-bottom: 1px solid #0d47a1;
+}
+
+.tab-menu button {
+    cursor: pointer;
+    transition: 0.3s;
+    background-color: white;
+    border: 1px solid #0d47a1;
+    color: #0d47a1;
+}
+
+.tab-menu button:hover {
+    background-color: #0d47a1;
+    color: white;
+}
+
+.tab-menu button.active {
+    background-color: #0d47a1;
+    color: white;
+}
+
+.tabcontent {
+    display: none;
+}
+/* TAB STYLES END*/
