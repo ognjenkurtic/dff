@@ -108,13 +108,16 @@ btnParseCsv.addEventListener("click", async function (event) {
         return function(e) {
             const parseResult = Papa.parse(e.target.result);
             
-            console.log('Parsirani sadrzajČ' * JSON.stringify(parseResult));
+            console.log('Parsirani sadrzaj:' + parseResult);
             console.log('Broj linija: ' + parseResult.data.length);
             
             let i = 0;
-            parseResult.data.foreach(invoiceRow => {
-                console.log(`Broj kolona u redu: ${i + 1}: ${invoiceRow.length}`);
-                // generate signatures
+
+            parseResult.data.foreach(async invoiceRow => {
+                console.log(`Broj kolona u redu ${i + 1}: ${invoiceRow.length}`);
+                const generatedSignatures = await generateSignatures(invoiceRow[0], invoiceRow[1], invoiceRow[2], invoiceRow[3], invoiceRow[4], invoiceRow[5], invoiceRow[6]);
+                console.log(`Generisani potpisi za red ${i + 1}: ${JSON.stringify(generatedSignatures)}`);
+                i++;
             });
         };
     })(selectedFile);
