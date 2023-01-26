@@ -42,12 +42,22 @@ function handleTabmenuClick(tabName) {
 btnChkDups.addEventListener("click", async function (event) {
 	event.preventDefault();
 
-    await generateSignatures();
+    cleanupSignaturesAndResult();
+
+    const matBrojDob = invoiceForm.elements["mat_broj_dobavljac"].value;
+    const matBrojKupac = invoiceForm.elements["mat_broj_kupac"].value;
+    const brojFakture = invoiceForm.elements["broj_fakture"].value;
+    const datumIzdavanja = invoiceForm.elements["datum_izdavanja"].value;
+    const datumValute = invoiceForm.elements["datum_valute"].value;
+    const iznos = invoiceForm.elements["iznos"].value;
+    const sefId = invoiceForm.elements["sef_id"].value;
+
+    await generateSignatures(matBrojDob, matBrojKupac, brojFakture, datumIzdavanja, datumValute, iznos, sefId);
 
     const response = await fetch(`${apiUrl}/api/Signatures/check`, {
         headers: fetchApiKeyAndPrepareHeaders(),
     	method: 'POST',
-        body: JSON.stringify(fetchSignaturesAndPrepareBody()),
+        body: JSON.stringify(fetchManualSignaturesAndPrepareBody()),
     });
 
     await processResponse(response, false);
@@ -56,12 +66,22 @@ btnChkDups.addEventListener("click", async function (event) {
 btnSendSig.addEventListener("click", async function (event) {
 	event.preventDefault();
 
-    await generateSignatures();
+    cleanupSignaturesAndResult();
+
+    const matBrojDob = invoiceForm.elements["mat_broj_dobavljac"].value;
+    const matBrojKupac = invoiceForm.elements["mat_broj_kupac"].value;
+    const brojFakture = invoiceForm.elements["broj_fakture"].value;
+    const datumIzdavanja = invoiceForm.elements["datum_izdavanja"].value;
+    const datumValute = invoiceForm.elements["datum_valute"].value;
+    const iznos = invoiceForm.elements["iznos"].value;
+    const sefId = invoiceForm.elements["sef_id"].value;
+
+    await generateSignatures(matBrojDob, matBrojKupac, brojFakture, datumIzdavanja, datumValute, iznos, sefId);
 
     const response = await fetch(`${apiUrl}/api/Signatures/checkandstore`, {
         headers: fetchApiKeyAndPrepareHeaders(),
     	method: 'POST',
-        body: JSON.stringify(fetchSignaturesAndPrepareBody()),
+        body: JSON.stringify(fetchManualSignaturesAndPrepareBody()),
     });
 
     await processResponse(response, true);
@@ -80,26 +100,19 @@ btnParseCsv.addEventListener("click", async function (event) {
 
     let reader = new FileReader();
 
-    reader.onload = (function(theFile) {
+    reader.onload = (function() {
         return function(e) {
-            console.log(JSON.stringify(e.target.result));
+            const parseResult = Papa.parse(e.target.result);
+            
+            console.log('Parsirani sadrzajČ' * JSON.stringify(parseResult));
+            console.log('Broj linija: ' + parseResult.data.length);
         };
     })(selectedFile);
 
     reader.readAsText(selectedFile);
 });
 
-async function generateSignatures() {
-    cleanupSignaturesAndResult();
-
-    const matBrojDob = invoiceForm.elements["mat_broj_dobavljac"].value;
-    const matBrojKupac = invoiceForm.elements["mat_broj_kupac"].value;
-    const brojFakture = invoiceForm.elements["broj_fakture"].value;
-    const datumIzdavanja = invoiceForm.elements["datum_izdavanja"].value;
-    const datumValute = invoiceForm.elements["datum_valute"].value;
-    const iznos = invoiceForm.elements["iznos"].value;
-    const sefId = invoiceForm.elements["sef_id"].value;
-
+async function generateSignatures(matBrojDob, matBrojKupac, brojFakture, datumIzdavanja, datumValute, iznos, sefId) {
     const signature1Input = matBrojDob + matBrojKupac + brojFakture + datumIzdavanja + datumValute + iznos;
     if (signature1Input !== undefined && signature1Input.length > 0) {
         const signature1 = await hashCode(signature1Input);
@@ -147,7 +160,7 @@ function fetchApiKeyAndPrepareHeaders() {
     return requestHeaders;
 }
 
-function fetchSignaturesAndPrepareBody() {
+function fetchManualSignaturesAndPrepareBody() {
     const signatureSet = {
         signature1: pSignature1.textContent,
         signature2: pSignature2.textContent,
