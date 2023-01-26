@@ -57,7 +57,7 @@ btnChkDups.addEventListener("click", async function (event) {
     const response = await fetch(`${apiUrl}/api/Signatures/check`, {
         headers: fetchApiKeyAndPrepareHeaders(),
     	method: 'POST',
-        body: JSON.stringify(fetchManualSignaturesAndPrepareBody()),
+        body: JSON.stringify(prepareReqBodyFromSignatures(pSignature1.textContent, pSignature2.textContent, pSignature3.textContent, pSignature4.textContent)),
     });
 
     await processResponse(response, false);
@@ -81,7 +81,7 @@ btnSendSig.addEventListener("click", async function (event) {
     const response = await fetch(`${apiUrl}/api/Signatures/checkandstore`, {
         headers: fetchApiKeyAndPrepareHeaders(),
     	method: 'POST',
-        body: JSON.stringify(fetchManualSignaturesAndPrepareBody()),
+        body: JSON.stringify(prepareReqBodyFromSignatures(pSignature1.textContent, pSignature2.textContent, pSignature3.textContent, pSignature4.textContent)),
     });
 
     await processResponse(response, true);
@@ -106,6 +106,12 @@ btnParseCsv.addEventListener("click", async function (event) {
             
             console.log('Parsirani sadrzajČ' * JSON.stringify(parseResult));
             console.log('Broj linija: ' + parseResult.data.length);
+            
+            let i = 0;
+            parseResult.data.foreach(invoiceRow => {
+                console.log(`Broj kolona u redu: ${i + 1}: ${invoiceRow.length}`);
+                // generate signatures
+            });
         };
     })(selectedFile);
 
@@ -160,12 +166,12 @@ function fetchApiKeyAndPrepareHeaders() {
     return requestHeaders;
 }
 
-function fetchManualSignaturesAndPrepareBody() {
+function prepareReqBodyFromSignatures(sig1, sig2, sig3, sig4) {
     const signatureSet = {
-        signature1: pSignature1.textContent,
-        signature2: pSignature2.textContent,
-        signature3: pSignature3.textContent,
-        signature4: pSignature4.textContent,
+        signature1: sig1,
+        signature2: sig2,
+        signature3: sig3,
+        signature4: sig4,
     }
 
     const requestBody = {
