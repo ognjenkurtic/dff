@@ -220,6 +220,15 @@ h2 {
     font-weight: 600;
 }
 
+.csv_row_index {
+    font-size: 12px;
+}
+
+.csv_row_result {
+    font-size: 10px;
+    border-bottom: 1px dashed darkred;
+}
+
 /* TAB STYLES */
 .tab-menu {
     border-bottom: 1px solid #0d47a1;
