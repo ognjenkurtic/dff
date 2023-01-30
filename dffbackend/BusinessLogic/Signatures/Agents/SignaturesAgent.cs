@@ -87,6 +87,11 @@ public class SignaturesAgent : ISignaturesAgent
         string candidateSignature,
         List<SignatureDuplicateResponseDto> results)
     {
+        if (string.IsNullOrEmpty(existingSignature))
+        {
+            return;
+        }
+
         if (existingSignature != candidateSignature)
         {
             return;
