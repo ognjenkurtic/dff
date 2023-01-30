@@ -18,10 +18,11 @@
             <span class="left-side-subtitle">Sekcija za faktoring</span>
         </div>
         <div class="subtext">
-            <p>Potpis 1 sastoji se od svih podataka</p>
-            <p>Potpis 2 sastoji se od matičnih brojeva, datuma i iznosa (slučaj kada se prevara pokuša sa izmenjenim brojem fakture)</p>
-            <p>Potpis 3 sastoji se od matičnih brojeva, datuma i broja fakture (slučaj kada se prevara pokuša sa izmenjenim iznosom fakture)</p>
-            <p>Potpis 4 sastoji se od jedinstvenog broja fakture iz SEFa</p>
+            <p>Potpis 1 sastoji se od svih podataka. Poklapanje po ovom potpisu označava visoku verovatnoću prevare.</p>
+            <p>Potpis 2 sastoji se od matičnih brojeva, datuma i iznosa (slučaj kada se prevara pokuša sa izmenjenim brojem fakture).</p>
+            <p>Potpis 3 sastoji se od matičnih brojeva, datuma i broja fakture (slučaj kada se prevara pokuša sa izmenjenim iznosom fakture).</p>
+            <p>Potpis 4 sastoji se od matičnih brojeva, broja fakture i iznosa (slučaj kada se prevara pokuša sa izmenjenim datumima fakture).</p>
+            <p>Potpis 5 sastoji se od jedinstvenog broja fakture iz SEFa. Poklapanje po ovom potpisu označava visoku verovatnoću prevare.</p>
         </div>
     </div>
 
@@ -82,7 +83,7 @@
                             </p>
                             <p>
                                 <label>Iznos</label>
-                                <input type="text" name="iznos">
+                                <input type="number" name="iznos">
                             </p>
                         </div>
                         <div class="form-section">
@@ -113,6 +114,8 @@
                     <p class="signature-label">Potpis 3: <span id="potpis_3"></span></p>
                     <br/>
                     <p class="signature-label">Potpis 4: <span id="potpis_4"></span></p>
+                    <br/>
+                    <p class="signature-label">Potpis 5: <span id="potpis_5"></span></p>
                 </div>
             </div>
         </div>
