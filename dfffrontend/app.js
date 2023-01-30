@@ -44,13 +44,15 @@ btnChkDups.addEventListener("click", async function (event) {
 
     cleanupSignaturesAndResult();
 
-    const matBrojDob = invoiceForm.elements["mat_broj_dobavljac"].value;
-    const matBrojKupac = invoiceForm.elements["mat_broj_kupac"].value;
-    const brojFakture = invoiceForm.elements["broj_fakture"].value;
-    const datumIzdavanja = invoiceForm.elements["datum_izdavanja"].value;
-    const datumValute = invoiceForm.elements["datum_valute"].value;
-    const iznos = invoiceForm.elements["iznos"].value;
-    const sefId = invoiceForm.elements["sef_id"].value;
+    const [ 
+        matBrojDob,
+        matBrojKupac,
+        brojFakture,
+        datumIzdavanja,
+        datumValute,
+        iznos,
+        sefId 
+    ] = getInputsFromManualEntryForm();
 
     const generatedSignatures = await generateSignatures(matBrojDob, matBrojKupac, brojFakture, datumIzdavanja, datumValute, iznos, sefId);
 
@@ -70,13 +72,15 @@ btnSendSig.addEventListener("click", async function (event) {
 
     cleanupSignaturesAndResult();
 
-    const matBrojDob = invoiceForm.elements["mat_broj_dobavljac"].value;
-    const matBrojKupac = invoiceForm.elements["mat_broj_kupac"].value;
-    const brojFakture = invoiceForm.elements["broj_fakture"].value;
-    const datumIzdavanja = invoiceForm.elements["datum_izdavanja"].value;
-    const datumValute = invoiceForm.elements["datum_valute"].value;
-    const iznos = invoiceForm.elements["iznos"].value;
-    const sefId = invoiceForm.elements["sef_id"].value;
+    const [ 
+        matBrojDob,
+        matBrojKupac,
+        brojFakture,
+        datumIzdavanja,
+        datumValute,
+        iznos,
+        sefId 
+    ] = getInputsFromManualEntryForm();
 
     const generatedSignatures = await generateSignatures(matBrojDob, matBrojKupac, brojFakture, datumIzdavanja, datumValute, iznos, sefId);
 
@@ -124,6 +128,18 @@ btnParseCsv.addEventListener("click", async function (event) {
 
     reader.readAsText(selectedFile);
 });
+
+function getInputsFromManualEntryForm() {
+    const matBrojDob = invoiceForm.elements["mat_broj_dobavljac"].value;
+    const matBrojKupac = invoiceForm.elements["mat_broj_kupac"].value;
+    const brojFakture = invoiceForm.elements["broj_fakture"].value;
+    const datumIzdavanja = invoiceForm.elements["datum_izdavanja"].value;
+    const datumValute = invoiceForm.elements["datum_valute"].value;
+    const iznos = invoiceForm.elements["iznos"].value;
+    const sefId = invoiceForm.elements["sef_id"].value; // 766e3a6b-1be5-48ac-bad4-eb12ceba540c
+
+    return [matBrojDob, matBrojKupac, brojFakture, datumIzdavanja, datumValute, iznos, sefId];
+}
 
 async function generateSignatures(matBrojDob, matBrojKupac, brojFakture, datumIzdavanja, datumValute, iznos, sefId) {
     let signature1;
