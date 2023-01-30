@@ -24,7 +24,7 @@ async function generateSignatures(matBrojDob, matBrojKupac, brojFakture, datumIz
         signature4 = await hashCode(signature4Input);
     }
 
-    return { signature1: signature1, signature2: signature2, signature3: signature3, signature4: signature4,  }
+    return { signature1: signature1, signature2: signature2, signature3: signature3, signature4: signature4 };
 }
 
 async function hashCode(str) {
@@ -35,16 +35,9 @@ async function hashCode(str) {
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-function prepareReqBodyFromSignatures(sig1, sig2, sig3, sig4) {
-    const signatureSet = {
-        signature1: sig1,
-        signature2: sig2,
-        signature3: sig3,
-        signature4: sig4,
-    }
-
+function prepareReqBodyFromSignatureSets(signatureSets) {
     const requestBody = {
-        signaturesSets: [signatureSet]
+        signaturesSets: signatureSets
     }
 
     return requestBody;
