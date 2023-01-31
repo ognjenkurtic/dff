@@ -14,4 +14,6 @@ public class SignatureSetDto
     public string Signature3 { get; set; }
 
     public string Signature4 { get; set; }
+    
+    public string Signature5 { get; set; }
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using dffbackend.Models;
 
@@ -10,9 +11,11 @@ using dffbackend.Models;
 namespace dffbackend.Migrations
 {
     [DbContext(typeof(DffContext))]
-    partial class DffContextModelSnapshot : ModelSnapshot
+    [Migration("20230131141211_Signature5AddedInSignaturesTbl")]
+    partial class Signature5AddedInSignaturesTbl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

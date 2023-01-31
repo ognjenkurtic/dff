@@ -28,7 +28,8 @@ public class SignaturesAgent : ISignaturesAgent
                     (s.Signature1 != string.Empty && s.Signature1 == submittedSignatures.Signature1) ||
                         (s.Signature3 != string.Empty && s.Signature2 == submittedSignatures.Signature2) ||
                             (s.Signature3 != string.Empty && s.Signature3 == submittedSignatures.Signature3) ||
-                                (s.Signature4 != string.Empty && s.Signature4 == submittedSignatures.Signature4));
+                                (s.Signature4 != string.Empty && s.Signature4 == submittedSignatures.Signature4) ||
+                                    (s.Signature5 != string.Empty && s.Signature5 == submittedSignatures.Signature5));
         
         if (entryWithDuplicateSignature is not null)
         {
@@ -59,6 +60,13 @@ public class SignaturesAgent : ISignaturesAgent
                 entryWithDuplicateSignature.FactoringCompany,
                 submittedSignatures.Signature4,
                 results.SignatureDuplicateResponses);
+
+            CheckExactSignatureDuplicationAndCreateResponse(
+                SignatureType.Signature5,
+                entryWithDuplicateSignature.Signature5, 
+                entryWithDuplicateSignature.FactoringCompany,
+                submittedSignatures.Signature5,
+                results.SignatureDuplicateResponses);    
             
             results.HasDuplicates = true;
         };
