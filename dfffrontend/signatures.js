@@ -3,6 +3,7 @@ async function generateSignatures(matBrojDob, matBrojKupac, brojFakture, datumIz
     let signature2;
     let signature3;
     let signature4;
+    let signature5;
 
     const signature1Input = matBrojDob + matBrojKupac + brojFakture + datumIzdavanja + datumValute + iznos;
     if (signature1Input !== undefined && signature1Input.length > 0) {
@@ -19,12 +20,17 @@ async function generateSignatures(matBrojDob, matBrojKupac, brojFakture, datumIz
         signature3 = await hashCode(signature3Input);
     }
 
-    const signature4Input = sefId;
-    if(signature4Input !== undefined && signature4Input.length > 0) {
+    const signature4Input = matBrojDob + matBrojKupac + brojFakture + iznos;
+    if (signature4Input !== undefined && signature4Input.length > 0) {
         signature4 = await hashCode(signature4Input);
     }
 
-    return { signature1: signature1, signature2: signature2, signature3: signature3, signature4: signature4 };
+    const signature5Input = sefId;
+    if(signature5Input !== undefined && signature5Input.length > 0) {
+        signature5 = await hashCode(signature5Input);
+    }
+
+    return { signature1: signature1, signature2: signature2, signature3: signature3, signature4: signature4, signature5: signature5 };
 }
 
 async function hashCode(str) {
