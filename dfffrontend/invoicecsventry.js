@@ -1,6 +1,7 @@
 const result_row_csv = document.getElementsByClassName("csv_row_index");
 const result_csv = document.getElementsByClassName("csv_row_result");
 const btnParseCsv = document.getElementById("parse_csv");
+const csv_result = document.getElementById("result_csv");
 
 btnParseCsv.addEventListener("click", async function (event) {
 	event.preventDefault();
@@ -44,7 +45,7 @@ btnParseCsv.addEventListener("click", async function (event) {
                 body: JSON.stringify(prepareReqBodyFromSignatureSets(generatedSignatureSets)),
             });
 
-            console.log(await response.json());
+            processCsvUploadResponse(response);
         };
     })(selectedFile);
 
@@ -65,4 +66,64 @@ function showSignaturesForCsvEntry(singatureSets) {
         result_csv[i-1].after(new_result_row_index);
         new_result_row_index.after(new_result_row_content);
     });
+}
+
+async function processCsvUploadResponse(response, isStoreAction) {
+    if (!response.ok) {
+        processCsvUploadErrorResponse(response);
+        return;
+    }
+
+    await processCsvUploadOkResponse(response, isStoreAction);
+}
+
+async function processCsvUploadErrorResponse(response) {
+    csv_result.className = "result-error";
+
+    switch (response.status) {
+        case 401:
+            csv_result.textContent = "Neuspešna autorizacija. Proverite API ključ.";
+            break;
+        case 400:
+            csv_result.textContent = "Nevalidan zahtev. Proverite konzolu za više detalja.";
+            break;
+        default:
+            csv_result.textContent = "Došlo je do greške. Proverite konzolu za više detalja.";
+            break;
+    }
+
+    console.warn('Došlo je do greške. Full response: ', await response.json());
+}
+
+async function processCsvUploadOkResponse(response, isStoreAction) {
+    const responseData = await response.json();
+    console.log(JSON.stringify(responseData));
+
+    // TODO: Check if this is legit response at all
+    if (responseData.length === 0)
+    {
+        csv_result.textContent = "Faktura nije bila predmet faktoringa.";
+        csv_result.className = "result-success";
+        
+        if (isStoreAction) {
+            csv_result.textContent += " Potpisi su uspešno sačuvani u bazi.";
+        }
+
+        return;
+    } 
+
+    let hasDups = false;
+    responseData.forEach(sigSetResponse => {
+        if (sigSetResponse.hasDuplicates) {
+            hasDups = true;
+        }
+    });
+
+    if (hasDups) {
+        csv_result.textContent = `Neka od faktura je bila predmet faktoringa. Proverite konzolu za detalje.`;
+        csv_result.className = "result-error";
+    } else {
+        csv_result.textContent = "Nijedna faktura nije bila predmet faktoringa.";
+        csv_result.className = "result-success";
+    }
 }
