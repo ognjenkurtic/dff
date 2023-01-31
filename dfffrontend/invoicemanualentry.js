@@ -146,7 +146,7 @@ function showSignaturesForManualEntry(signatures) {
     }
 
     if (signatures.signature5 !== undefined) {
-        pSignature5.textContent = signatures.signature4;
+        pSignature5.textContent = signatures.signature5;
         pSignature5.className = '';
     }
 }

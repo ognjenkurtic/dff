@@ -60,7 +60,7 @@ function showSignaturesForCsvEntry(singatureSets) {
         const new_result_row_content = result_csv[i-1].cloneNode();
 
         new_result_row_index.textContent = `Red ${i}`;
-        new_result_row_content.textContent = `s1:${ss.signature1} s2:${ss.signature2} s3:${ss.signature3} s4:${ss.signature4} `
+        new_result_row_content.textContent = `s1:${ss.signature1} s2:${ss.signature2} s3:${ss.signature3} s4:${ss.signature4} s5:${ss.signature5}`
 
         result_csv[i-1].after(new_result_row_index);
         new_result_row_index.after(new_result_row_content);
