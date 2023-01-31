@@ -6,5 +6,6 @@ namespace dffbackend.Models
         Signature2 = 2,
         Signature3 = 3,
         Signature4 = 4,
+        Signature5 = 5
     }
 }
