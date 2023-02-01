@@ -1,7 +1,6 @@
-const result_row_csv = document.getElementsByClassName("csv_row_index");
-const result_csv = document.getElementsByClassName("csv_row_result");
+const result_message_csv = document.getElementById("result_csv");
+const result_signatures_csv = document.getElementById("results_and_signatures_csv");
 const btnParseCsv = document.getElementById("parse_csv");
-const csv_result = document.getElementById("result_csv");
 
 btnParseCsv.addEventListener("click", async function (event) {
 	event.preventDefault();
@@ -53,18 +52,39 @@ btnParseCsv.addEventListener("click", async function (event) {
 });
 
 function showSignaturesForCsvEntry(singatureSets) {
+    
+    result_signatures_csv.textContent = ''
+    let last_added_result_element;
+    
     let i = 0;
     singatureSets.forEach(ss => {
         i++;
 
-        const new_result_row_index = result_row_csv[i-1].cloneNode();
-        const new_result_row_content = result_csv[i-1].cloneNode();
+        let new_result_row_index = document.createElement('div');
+        new_result_row_index.classList.add('csv_row_index');
+        
+        let new_result_row_content = document.createElement('div');
+        new_result_row_content.classList.add('csv_row_result');
 
         new_result_row_index.textContent = `Red ${i}`;
         new_result_row_content.textContent = `s1:${ss.signature1} s2:${ss.signature2} s3:${ss.signature3} s4:${ss.signature4} s5:${ss.signature5}`
 
-        result_csv[i-1].after(new_result_row_index);
+        if (i === 1) {
+            result_signatures_csv.appendChild(new_result_row_index);
+        } else {
+            last_added_result_element.after(new_result_row_index);
+        }
+
         new_result_row_index.after(new_result_row_content);
+
+        last_added_result_element = new_result_row_content;
+
+        // const new_result_row_index = csv_row_index[i-1].cloneNode();
+        // const new_result_row_content = csv_row_result[i-1].cloneNode();
+
+
+
+        // csv_row_result[i-1].after(new_result_row_index);
     });
 }
 
@@ -78,17 +98,17 @@ async function processCsvUploadResponse(response, isStoreAction) {
 }
 
 async function processCsvUploadErrorResponse(response) {
-    csv_result.className = "result-error";
+    result_message_csv.className = "result-error";
 
     switch (response.status) {
         case 401:
-            csv_result.textContent = "Neuspešna autorizacija. Proverite API ključ.";
+            result_message_csv.textContent = "Neuspešna autorizacija. Proverite API ključ.";
             break;
         case 400:
-            csv_result.textContent = "Nevalidan zahtev. Proverite konzolu za više detalja.";
+            result_message_csv.textContent = "Nevalidan zahtev. Proverite konzolu za više detalja.";
             break;
         default:
-            csv_result.textContent = "Došlo je do greške. Proverite konzolu za više detalja.";
+            result_message_csv.textContent = "Došlo je do greške. Proverite konzolu za više detalja.";
             break;
     }
 
@@ -102,11 +122,11 @@ async function processCsvUploadOkResponse(response, isStoreAction) {
     // TODO: Check if this is legit response at all
     if (responseData.length === 0)
     {
-        csv_result.textContent = "Faktura nije bila predmet faktoringa.";
-        csv_result.className = "result-success";
+        result_message_csv.textContent = "Faktura nije bila predmet faktoringa.";
+        result_message_csv.className = "result-success";
         
         if (isStoreAction) {
-            csv_result.textContent += " Potpisi su uspešno sačuvani u bazi.";
+            result_message_csv.textContent += " Potpisi su uspešno sačuvani u bazi.";
         }
 
         return;
@@ -120,10 +140,10 @@ async function processCsvUploadOkResponse(response, isStoreAction) {
     });
 
     if (hasDups) {
-        csv_result.textContent = `Neka od faktura je bila predmet faktoringa. Proverite konzolu za detalje.`;
-        csv_result.className = "result-error";
+        result_message_csv.textContent = `Neka od faktura je bila predmet faktoringa. Proverite konzolu za detalje.`;
+        result_message_csv.className = "result-error";
     } else {
-        csv_result.textContent = "Nijedna faktura nije bila predmet faktoringa.";
-        csv_result.className = "result-success";
+        result_message_csv.textContent = "Nijedna faktura nije bila predmet faktoringa.";
+        result_message_csv.className = "result-success";
     }
 }
