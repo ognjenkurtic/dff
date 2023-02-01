@@ -12,7 +12,7 @@ const pSignature5 = document.getElementById("potpis_5");
 const result = document.getElementById("result");
 
 // Regular expression to check if string is a valid UUID
-const regexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
+const regexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/i;
 
 btnChkDups.addEventListener("click", async function (event) {
 	event.preventDefault();

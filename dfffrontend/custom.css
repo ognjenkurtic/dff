@@ -257,3 +257,21 @@ h2 {
     display: none;
 }
 /* TAB STYLES END*/
+
+.tooltip {
+    position: relative;
+ }
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    background: rgba(0, 0, 0, 0.75);
+    color: white;
+    border-radius: 7px;
+    padding: 5px 10px;
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+}
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
