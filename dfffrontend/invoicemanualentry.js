@@ -259,6 +259,9 @@ async function processOkResponse(response, isStoreAction) {
 
         result.textContent = `Faktura je bila predmet faktoringa kod ${factorName}. Kontakt email: ${factorEmail}`;
         result.className = "result-error";
+    } else if (signatureSetCheckResult.ownDuplicate) {
+        result.textContent = `Ova faktura je duplikat sa fakturom koju ste vi već podneli`;
+        result.className = "result-error";
     } else {
         result.textContent = "Faktura nije bila predmet faktoringa.";
         result.className = "result-success";
