@@ -1,8 +1,9 @@
 const result_message_csv = document.getElementById("result_csv");
 const result_signatures_csv = document.getElementById("results_and_signatures_csv");
-const btnParseCsv = document.getElementById("parse_csv");
+const btn_check_dups_csv = document.getElementById("check_duplicates_csv");
+const btn_send_sigs_csv = document.getElementById("send_signatures_csv");
 
-btnParseCsv.addEventListener("click", async function (event) {
+btn_check_dups_csv.addEventListener("click", async function (event) {
 	event.preventDefault();
 
     const selectedFile = document.getElementById('invoices_csv_file').files[0];
@@ -51,6 +52,56 @@ btnParseCsv.addEventListener("click", async function (event) {
     reader.readAsText(selectedFile);
 });
 
+btn_send_sigs_csv.addEventListener("click", async function (event) {
+	event.preventDefault();
+
+    const selectedFile = document.getElementById('invoices_csv_file').files[0];
+
+    let reader = new FileReader();
+
+    reader.onload = (function() {
+        return async function(e) {
+            // TODO: Extract parsing of CSV file to a single method
+            const parseResult = Papa.parse(e.target.result);
+            
+            console.log('Parsirani sadrzaj:' + parseResult);
+            console.log('Broj linija: ' + parseResult.data.length);
+            
+            let i = 0;
+
+            const generatedSignatureSets = [];
+
+            for (const invoiceRow of parseResult.data) {
+                console.log(`Broj kolona u redu ${i + 1}: ${invoiceRow.length}`);
+
+                if (invoiceRow.length != 7) {
+                    console.log(`Broj kolona u redu nije 7.`);
+                    i++;
+                    continue;
+                }
+
+                const generatedSignatureSet = await generateSignatures(invoiceRow[0], invoiceRow[1], invoiceRow[2], invoiceRow[3], invoiceRow[4], invoiceRow[5], invoiceRow[6]);
+                console.log(`Generisani potpisi za red ${i + 1}: ${JSON.stringify(generatedSignatureSet)}`);
+                generatedSignatureSets.push(generatedSignatureSet);
+
+                i++;
+            }
+
+            showSignaturesForCsvEntry(generatedSignatureSets);
+            
+            const response = await fetch(`${apiUrl}/api/Signatures/checkandstore`, {
+                headers: fetchApiKeyAndPrepareHeaders(),
+                method: 'POST',
+                body: JSON.stringify(prepareReqBodyFromSignatureSets(generatedSignatureSets)),
+            });
+
+            processCsvUploadResponse(response, true);
+        };
+    })(selectedFile);
+
+    reader.readAsText(selectedFile);
+});
+
 function showSignaturesForCsvEntry(singatureSets) {
     
     result_signatures_csv.textContent = ''
@@ -78,13 +129,6 @@ function showSignaturesForCsvEntry(singatureSets) {
         new_result_row_index.after(new_result_row_content);
 
         last_added_result_element = new_result_row_content;
-
-        // const new_result_row_index = csv_row_index[i-1].cloneNode();
-        // const new_result_row_content = csv_row_result[i-1].cloneNode();
-
-
-
-        // csv_row_result[i-1].after(new_result_row_index);
     });
 }
 
@@ -140,10 +184,14 @@ async function processCsvUploadOkResponse(response, isStoreAction) {
     });
 
     if (hasDups) {
-        result_message_csv.textContent = `Neka od faktura je bila predmet faktoringa. Proverite konzolu za detalje.`;
+        result_message_csv.textContent = `Neka od faktura je bila predmet faktoringa. Proverite log iz konzole za detalje.`;
         result_message_csv.className = "result-error";
     } else {
         result_message_csv.textContent = "Nijedna faktura nije bila predmet faktoringa.";
         result_message_csv.className = "result-success";
+
+        if (isStoreAction) {
+            result_message_csv.textContent += " Potpisi su uspešno sačuvani u bazi.";
+        }
     }
 }
