@@ -119,6 +119,26 @@ function getInputsFromEntryForm() {
             alert('Matični broj mora imati 8 brojeva');
             return [ null ];
         };
+
+        if (!brojFakture) {
+            alert('Broj fakture mora biti unet');
+            return [ null ];
+        }
+
+        if (!datumIzdavanja) {
+            alert('Datum izdavanja mora biti unet');
+            return [ null ];
+        }
+
+        if (!datumValute) {
+            alert('Datum valute mora biti unet');
+            return [ null ];
+        }
+
+        if (!iznos) {
+            alert('Iznos mora biti unet');
+            return [ null ];
+        }
     }
 
     return [matBrojDob, matBrojKupac, brojFakture, datumIzdavanja, datumValute, iznos, sefId];
