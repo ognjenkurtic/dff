@@ -39,7 +39,7 @@ public class CheckSignaturesAndStoreCommandHandler : IRequestHandler<CheckSignat
             var checkDuplicatesResponse = await _signaturesAgent.CheckSignatureSetForDuplicates(request.RequesterId, signatureSet);
             results.Add(checkDuplicatesResponse);
 
-            if (checkDuplicatesResponse.HasDuplicates)
+            if (checkDuplicatesResponse.HasDuplicates || checkDuplicatesResponse.OwnDuplicate)
             {
                 // We do not store duplicates in the db because they are not going to be financed
                 // Db should contain only signatures of financed invoices
