@@ -31,7 +31,9 @@ public class SignaturesAgent : ISignaturesAgent
                                 (!string.IsNullOrEmpty(s.Signature4) && s.Signature4 == submittedSignatures.Signature4) ||
                                     (!string.IsNullOrEmpty(s.Signature5) && s.Signature5 == submittedSignatures.Signature5));
         
-        if (entryWithDuplicateSignature is not null)
+        results.OwnDuplicate = entryWithDuplicateSignature.FactoringCompanyId.ToString() == requesterId;
+        
+        if (entryWithDuplicateSignature is not null && !results.OwnDuplicate)
         {
             CheckExactSignatureDuplicationAndCreateResponse(
                 SignatureType.Signature1,

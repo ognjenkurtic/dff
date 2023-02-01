@@ -10,6 +10,8 @@ public class CheckDuplicatesResponseDto
     }
 
     public bool HasDuplicates { get; set; }
+    
+    public bool OwnDuplicate { get; set; }
 
     public List<SignatureDuplicateResponseDto> SignatureDuplicateResponses { get; set; }
 }
