@@ -275,3 +275,18 @@ h2 {
 .tooltip:hover .tooltiptext {
     visibility: visible;
 }
+
+input[type=file] {
+    padding: 0px;
+}
+
+input[type=file]::file-selector-button {
+    margin-right: 20px;
+    background: white;
+    border: 1px solid;
+    padding: 9px 20px;
+    border-radius: 5px;
+    color: black;
+    cursor: pointer;
+    font-size: 15px;
+}
