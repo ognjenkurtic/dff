@@ -1,0 +1,83 @@
+{
+	"info": {
+		"_postman_id": "9857d427-5504-4cdf-a2b7-c63ce4e2a716",
+		"name": "DFF",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Provera duplikata",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Factor-API-Key",
+						"value": "<api_key>",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"signaturesSets\": [\n    {\n      \"signature1\": \"string\",\n      \"signature2\": \"string2\",\n      \"signature3\": \"string3\",\n      \"signature4\": \"string4\",\n      \"signature5\": \"string5\"\n    }\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://dff.finspot.rs/api/Signatures/check",
+					"protocol": "https",
+					"host": [
+						"dff",
+						"finspot",
+						"rs"
+					],
+					"path": [
+						"api",
+						"Signatures",
+						"check"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Provera duplikata i upis ključeva",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Factor-API-Key",
+						"value": "<api_key>",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"signaturesSets\": [\n    {\n      \"signature1\": \"string\",\n      \"signature2\": \"string2\",\n      \"signature3\": \"string3\",\n      \"signature4\": \"string4\",\n      \"signature5\": \"string5\"\n    }\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://dff.finspot.rs/api/Signatures/checkandstore",
+					"protocol": "https",
+					"host": [
+						"dff",
+						"finspot",
+						"rs"
+					],
+					"path": [
+						"api",
+						"Signatures",
+						"checkandstore"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
