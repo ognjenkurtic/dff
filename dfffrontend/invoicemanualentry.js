@@ -141,12 +141,12 @@ function getInputsFromEntryForm() {
         }
 
         if(new Date(datumIzdavanja).getFullYear() < 2022) {
-            alert('Godina izdavanja fakture mora biti nakon 2022.');
+            alert('Godina izdavanja fakture mora biti nakon 2021.');
             return [ null ];
         }
 
         if(new Date(datumValute).getFullYear() > 2050) {
-            alert('Godina valute fakture mora biti pre 2050.');
+            alert('Godina valute fakture mora biti pre 2051.');
             return [ null ];
         }
 
