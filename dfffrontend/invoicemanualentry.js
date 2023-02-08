@@ -99,8 +99,8 @@ function cleanupSignaturesAndResult() {
 }
 
 function getInputsFromEntryForm() {
-    const matBrojDob = invoiceForm.elements["mat_broj_dobavljac"].value;
-    const matBrojKupac = invoiceForm.elements["mat_broj_kupac"].value;
+    const matBrojDob = invoiceForm.elements["mat_broj_dobavljac"].value.trim();
+    const matBrojKupac = invoiceForm.elements["mat_broj_kupac"].value.trim();
     const brojFakture = invoiceForm.elements["broj_fakture"].value;
     const datumIzdavanja = invoiceForm.elements["datum_izdavanja"].value;
     const datumValute = invoiceForm.elements["datum_valute"].value;
