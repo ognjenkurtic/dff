@@ -139,6 +139,21 @@ function getInputsFromEntryForm() {
             alert('Iznos mora biti unet');
             return [ null ];
         }
+
+        if(new Date(datumIzdavanja).getFullYear() < 2022) {
+            alert('Godina izdavanja fakture mora biti nakon 2022.');
+            return [ null ];
+        }
+
+        if(new Date(datumValute).getFullYear() > 2050) {
+            alert('Godina valute fakture mora biti pre 2050.');
+            return [ null ];
+        }
+
+        if(Date.parse(datumIzdavanja) > Date.parse(datumValute)) {
+            alert('Datum izdavanja mora biti manji od datuma valute');
+            return [ null ];
+        }
     }
 
     return [matBrojDob, matBrojKupac, brojFakture, datumIzdavanja, datumValute, iznos, sefId];
