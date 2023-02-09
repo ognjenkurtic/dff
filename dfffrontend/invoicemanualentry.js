@@ -105,6 +105,7 @@ function getInputsFromEntryForm() {
     const datumIzdavanja = invoiceForm.elements["datum_izdavanja"].value;
     const datumValute = invoiceForm.elements["datum_valute"].value;
     const iznos = invoiceForm.elements["iznos"].value;
+    const formatiranIznos = parseFloat(iznos).toFixed(2);
     const sefId = invoiceForm.elements["sef_id"].value; // 766e3a6b-1be5-48ac-bad4-eb12ceba540c
 
     const sefIdEntered = sefId !== undefined && sefId !== '';
@@ -156,7 +157,7 @@ function getInputsFromEntryForm() {
         }
     }
 
-    return [matBrojDob, matBrojKupac, brojFakture, datumIzdavanja, datumValute, iznos, sefId];
+    return [matBrojDob, matBrojKupac, brojFakture, datumIzdavanja, datumValute, formatiranIznos, sefId];
 }
 
 function showSignaturesForManualEntry(signatures) {
