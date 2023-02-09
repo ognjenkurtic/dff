@@ -10,32 +10,16 @@ const pSignature3 = document.getElementById("potpis_3");
 const pSignature4 = document.getElementById("potpis_4");
 const pSignature5 = document.getElementById("potpis_5");
 const result = document.getElementById("result");
+let hasDups = false;
 
 // Regular expression to check if string is a valid UUID
 const regexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/i;
 
 btnChkDups.addEventListener("click", async function (event) {
+    hasDups = false;
 	event.preventDefault();
 
-    cleanupSignaturesAndResult();
-
-    const [ 
-        matBrojDob,
-        matBrojKupac,
-        brojFakture,
-        datumIzdavanja,
-        datumValute,
-        iznos,
-        sefId 
-    ] = getInputsFromEntryForm();
-
-    if (!matBrojDob && !sefId) {
-        return;
-    }
-
-    const generatedSignatureSet = await generateSignatures(matBrojDob, matBrojKupac, brojFakture, datumIzdavanja, datumValute, iznos, sefId);
-
-    showSignaturesForManualEntry(generatedSignatureSet);
+    const generatedSignatureSet = await performSignatureGenerationAndUpdateUI();
 
     const response = await fetch(`${apiUrl}/api/Signatures/check`, {
         headers: fetchApiKeyAndPrepareHeaders(),
@@ -47,8 +31,44 @@ btnChkDups.addEventListener("click", async function (event) {
 });
 
 btnSendSig.addEventListener("click", async function (event) {
+    hasDups = false;
 	event.preventDefault();
 
+    const generatedSignatureSet = await performSignatureGenerationAndUpdateUI();
+
+    const responseCheck = await fetch(`${apiUrl}/api/Signatures/check`, {
+        headers: fetchApiKeyAndPrepareHeaders(),
+    	method: 'POST',
+        body: JSON.stringify(prepareReqBodyFromSignatureSets([generatedSignatureSet])),
+    });
+
+    await processResponse(responseCheck, false);
+
+    if (hasDups) {
+        const isConfirmed = confirm("Pronađeni su duplikati. Da li ste sigurni da želite da nastavite?");
+        
+        if (!isConfirmed)
+        {
+            return;
+        }
+
+        const responseStore = await fetch(`${apiUrl}/api/Signatures/checkandstore`, {
+            headers: fetchApiKeyAndPrepareHeaders(),
+            method: 'POST',
+            body: JSON.stringify(prepareReqBodyFromSignatureSets([generatedSignatureSet])),
+        });
+    
+        await processResponse(responseStore, true);
+    }
+});
+
+btnClearForm.addEventListener("click", async function (event) {
+	event.preventDefault();
+
+    document.getElementById("invoice_data").reset();
+})
+
+async function performSignatureGenerationAndUpdateUI() {
     cleanupSignaturesAndResult();
 
     const [ 
@@ -69,20 +89,8 @@ btnSendSig.addEventListener("click", async function (event) {
 
     showSignaturesForManualEntry(generatedSignatureSet);
 
-    const response = await fetch(`${apiUrl}/api/Signatures/checkandstore`, {
-        headers: fetchApiKeyAndPrepareHeaders(),
-    	method: 'POST',
-        body: JSON.stringify(prepareReqBodyFromSignatureSets([generatedSignatureSet])),
-    });
-
-    await processResponse(response, true);
-});
-
-btnClearForm.addEventListener("click", async function (event) {
-	event.preventDefault();
-
-    document.getElementById("invoice_data").reset();
-})
+    return generatedSignatureSet;
+}
 
 function cleanupSignaturesAndResult() {
     result.textContent = '';
@@ -218,21 +226,24 @@ async function processOkResponse(response, isStoreAction) {
     console.log(JSON.stringify(responseData));
 
     // TODO: Check if this is legit response at all
-    if (responseData.length === 0)
-    {
-        result.textContent = "Faktura nije bila predmet faktoringa.";
+    if (responseData.length === 0) {
         result.className = "result-success";
         
         if (isStoreAction) {
-            result.textContent += " Potpisi su uspešno sačuvani u bazi.";
-        }
+            result.textContent += "Potpisi su uspešno sačuvani u bazi.";
+        } else {
+            result.textContent = "Faktura nije bila predmet faktoringa.";
+        };
 
+        hasDups = false;
         return;
     } 
     
     const signatureSetCheckResult = responseData[0];
 
     if (signatureSetCheckResult.hasDuplicates) {
+        hasDups = true;
+
         let factorName = '';
         let factorEmail = '';
 
@@ -275,13 +286,16 @@ async function processOkResponse(response, isStoreAction) {
         result.textContent = `Faktura je bila predmet faktoringa kod ${factorName}. Kontakt email: ${factorEmail}`;
         result.className = "result-error";
     } else if (signatureSetCheckResult.ownDuplicate) {
+        hasDups = true;
         result.textContent = `Ova faktura je duplikat sa fakturom koju ste vi već podneli`;
         result.className = "result-error";
     } else {
+        hasDups = false;
         result.textContent = "Faktura nije bila predmet faktoringa.";
         result.className = "result-success";
-        if (isStoreAction) {
-            result.textContent += " Potpisi su uspešno sačuvani u bazi.";
-        }
+    }
+
+    if (isStoreAction) {
+        result.textContent += " Potpisi su uspešno sačuvani u bazi.";
     }
 }

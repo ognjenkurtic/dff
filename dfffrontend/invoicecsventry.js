@@ -2,9 +2,12 @@ const result_message_csv = document.getElementById("result_csv");
 const result_signatures_csv = document.getElementById("results_and_signatures_csv");
 const btn_check_dups_csv = document.getElementById("check_duplicates_csv");
 const btn_send_sigs_csv = document.getElementById("send_signatures_csv");
+let hasDups = false;
+
 
 btn_check_dups_csv.addEventListener("click", async function (event) {
 	event.preventDefault();
+    hasDups = false;
 
     const selectedFile = document.getElementById('invoices_csv_file').files[0];
 
@@ -12,32 +15,8 @@ btn_check_dups_csv.addEventListener("click", async function (event) {
 
     reader.onload = (function() {
         return async function(e) {
-            const parseResult = Papa.parse(e.target.result);
-            
-            console.log('Parsirani sadrzaj:' + parseResult);
-            console.log('Broj linija: ' + parseResult.data.length);
-            
-            let i = 0;
 
-            const generatedSignatureSets = [];
-
-            for (const invoiceRow of parseResult.data) {
-                console.log(`Broj kolona u redu ${i + 1}: ${invoiceRow.length}`);
-
-                if (invoiceRow.length != 7) {
-                    console.log(`Broj kolona u redu nije 7.`);
-                    i++;
-                    continue;
-                }
-
-                const generatedSignatureSet = await generateSignatures(invoiceRow[0], invoiceRow[1], invoiceRow[2], invoiceRow[3], invoiceRow[4], invoiceRow[5], invoiceRow[6]);
-                console.log(`Generisani potpisi za red ${i + 1}: ${JSON.stringify(generatedSignatureSet)}`);
-                generatedSignatureSets.push(generatedSignatureSet);
-
-                i++;
-            }
-
-            showSignaturesForCsvEntry(generatedSignatureSets);
+            const generatedSignatureSets = await performCSVSignatureGenerationAndUpdateUI();
             
             const response = await fetch(`${apiUrl}/api/Signatures/check`, {
                 headers: fetchApiKeyAndPrepareHeaders(),
@@ -54,6 +33,7 @@ btn_check_dups_csv.addEventListener("click", async function (event) {
 
 btn_send_sigs_csv.addEventListener("click", async function (event) {
 	event.preventDefault();
+    hasDups = false;
 
     const selectedFile = document.getElementById('invoices_csv_file').files[0];
 
@@ -61,46 +41,68 @@ btn_send_sigs_csv.addEventListener("click", async function (event) {
 
     reader.onload = (function() {
         return async function(e) {
-            // TODO: Extract parsing of CSV file to a single method
-            const parseResult = Papa.parse(e.target.result);
-            
-            console.log('Parsirani sadrzaj:' + parseResult);
-            console.log('Broj linija: ' + parseResult.data.length);
-            
-            let i = 0;
+            const generatedSignatureSets = await performCSVSignatureGenerationAndUpdateUI();
 
-            const generatedSignatureSets = [];
-
-            for (const invoiceRow of parseResult.data) {
-                console.log(`Broj kolona u redu ${i + 1}: ${invoiceRow.length}`);
-
-                if (invoiceRow.length != 7) {
-                    console.log(`Broj kolona u redu nije 7.`);
-                    i++;
-                    continue;
-                }
-
-                const generatedSignatureSet = await generateSignatures(invoiceRow[0], invoiceRow[1], invoiceRow[2], invoiceRow[3], invoiceRow[4], invoiceRow[5], invoiceRow[6]);
-                console.log(`Generisani potpisi za red ${i + 1}: ${JSON.stringify(generatedSignatureSet)}`);
-                generatedSignatureSets.push(generatedSignatureSet);
-
-                i++;
-            }
-
-            showSignaturesForCsvEntry(generatedSignatureSets);
-            
-            const response = await fetch(`${apiUrl}/api/Signatures/checkandstore`, {
+            const responseCheck = await fetch(`${apiUrl}/api/Signatures/check`, {
                 headers: fetchApiKeyAndPrepareHeaders(),
                 method: 'POST',
                 body: JSON.stringify(prepareReqBodyFromSignatureSets(generatedSignatureSets)),
             });
 
-            processCsvUploadResponse(response, true);
+            processCsvUploadResponse(responseCheck);
+
+            if (hasDups) {
+                const isConfirmed = confirm("Pronađeni su duplikati. Da li ste sigurni da želite da nastavite?");
+                
+                if (!isConfirmed)
+                {
+                    return;
+                }
+
+                const responseStore = await fetch(`${apiUrl}/api/Signatures/checkandstore`, {
+                    headers: fetchApiKeyAndPrepareHeaders(),
+                    method: 'POST',
+                    body: JSON.stringify(prepareReqBodyFromSignatureSets(generatedSignatureSets)),
+                });
+    
+                processCsvUploadResponse(responseStore, true);
+            }
         };
     })(selectedFile);
 
     reader.readAsText(selectedFile);
 });
+
+async function performCSVSignatureGenerationAndUpdateUI() {
+    const parseResult = Papa.parse(e.target.result);
+            
+    console.log('Parsirani sadrzaj:' + parseResult);
+    console.log('Broj linija: ' + parseResult.data.length);
+    
+    let i = 0;
+
+    const generatedSignatureSets = [];
+
+    for (const invoiceRow of parseResult.data) {
+        console.log(`Broj kolona u redu ${i + 1}: ${invoiceRow.length}`);
+
+        if (invoiceRow.length != 7) {
+            console.log(`Broj kolona u redu nije 7.`);
+            i++;
+            continue;
+        }
+
+        const generatedSignatureSet = await generateSignatures(invoiceRow[0], invoiceRow[1], invoiceRow[2], invoiceRow[3], invoiceRow[4], invoiceRow[5], invoiceRow[6]);
+        console.log(`Generisani potpisi za red ${i + 1}: ${JSON.stringify(generatedSignatureSet)}`);
+        generatedSignatureSets.push(generatedSignatureSet);
+
+        i++;
+    }
+
+    showSignaturesForCsvEntry(generatedSignatureSets);
+
+    return generatedSignatureSets;
+}
 
 function showSignaturesForCsvEntry(singatureSets) {
     
@@ -176,7 +178,6 @@ async function processCsvUploadOkResponse(response, isStoreAction) {
         return;
     } 
 
-    let hasDups = false;
     responseData.forEach(sigSetResponse => {
         if (sigSetResponse.hasDuplicates) {
             hasDups = true;
@@ -189,9 +190,9 @@ async function processCsvUploadOkResponse(response, isStoreAction) {
     } else {
         result_message_csv.textContent = "Nijedna faktura nije bila predmet faktoringa.";
         result_message_csv.className = "result-success";
+    }
 
-        if (isStoreAction) {
-            result_message_csv.textContent += " Potpisi su uspešno sačuvani u bazi.";
-        }
+    if (isStoreAction) {
+        result_message_csv.textContent += " Potpisi su uspešno sačuvani u bazi.";
     }
 }
