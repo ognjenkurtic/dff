@@ -51,22 +51,24 @@ btn_send_sigs_csv.addEventListener("click", async function (event) {
 
             processCsvUploadResponse(responseCheck);
 
-            if (hasDups) {
-                const isConfirmed = confirm("Pronađeni su duplikati. Da li ste sigurni da želite da nastavite?");
-                
-                if (!isConfirmed)
-                {
-                    return;
+            setTimeout(async () => { // Given 0.5 sec for UI to update before confirm
+                if (hasDups) {
+                    const isConfirmed = confirm("Pronađeni su duplikati. Da li ste sigurni da želite da nastavite?");
+                    
+                    if (!isConfirmed)
+                    {
+                        return;
+                    }
                 }
-            }
 
-            const responseStore = await fetch(`${apiUrl}/api/Signatures/checkandstore`, {
-                headers: fetchApiKeyAndPrepareHeaders(),
-                method: 'POST',
-                body: JSON.stringify(prepareReqBodyFromSignatureSets(generatedSignatureSets)),
-            });
+                const responseStore = await fetch(`${apiUrl}/api/Signatures/checkandstore`, {
+                    headers: fetchApiKeyAndPrepareHeaders(),
+                    method: 'POST',
+                    body: JSON.stringify(prepareReqBodyFromSignatureSets(generatedSignatureSets)),
+                });
 
-            processCsvUploadResponse(responseStore, true);
+                processCsvUploadResponse(responseStore, true);
+            }, 500);
         };
     })(selectedFile);
 
