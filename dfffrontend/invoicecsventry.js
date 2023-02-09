@@ -58,15 +58,15 @@ btn_send_sigs_csv.addEventListener("click", async function (event) {
                 {
                     return;
                 }
-
-                const responseStore = await fetch(`${apiUrl}/api/Signatures/checkandstore`, {
-                    headers: fetchApiKeyAndPrepareHeaders(),
-                    method: 'POST',
-                    body: JSON.stringify(prepareReqBodyFromSignatureSets(generatedSignatureSets)),
-                });
-    
-                processCsvUploadResponse(responseStore, true);
             }
+
+            const responseStore = await fetch(`${apiUrl}/api/Signatures/checkandstore`, {
+                headers: fetchApiKeyAndPrepareHeaders(),
+                method: 'POST',
+                body: JSON.stringify(prepareReqBodyFromSignatureSets(generatedSignatureSets)),
+            });
+
+            processCsvUploadResponse(responseStore, true);
         };
     })(selectedFile);
 

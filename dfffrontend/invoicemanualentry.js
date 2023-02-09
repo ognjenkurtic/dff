@@ -51,15 +51,15 @@ btnSendSig.addEventListener("click", async function (event) {
         {
             return;
         }
-
-        const responseStore = await fetch(`${apiUrl}/api/Signatures/checkandstore`, {
-            headers: fetchApiKeyAndPrepareHeaders(),
-            method: 'POST',
-            body: JSON.stringify(prepareReqBodyFromSignatureSets([generatedSignatureSet])),
-        });
-    
-        await processResponse(responseStore, true);
     }
+
+    const responseStore = await fetch(`${apiUrl}/api/Signatures/checkandstore`, {
+        headers: fetchApiKeyAndPrepareHeaders(),
+        method: 'POST',
+        body: JSON.stringify(prepareReqBodyFromSignatureSets([generatedSignatureSet])),
+    });
+
+    await processResponse(responseStore, true);
 });
 
 btnClearForm.addEventListener("click", async function (event) {
@@ -196,7 +196,7 @@ function showSignaturesForManualEntry(signatures) {
 
 async function processResponse(response, isStoreAction) {
     if (!response.ok) {
-        processErrorResponse(response);
+        await processErrorResponse(response);
         return;
     }
 
