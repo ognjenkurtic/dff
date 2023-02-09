@@ -2,12 +2,12 @@ const result_message_csv = document.getElementById("result_csv");
 const result_signatures_csv = document.getElementById("results_and_signatures_csv");
 const btn_check_dups_csv = document.getElementById("check_duplicates_csv");
 const btn_send_sigs_csv = document.getElementById("send_signatures_csv");
-let hasDups = false;
+let hasCsvDups = false;
 
 
 btn_check_dups_csv.addEventListener("click", async function (event) {
 	event.preventDefault();
-    hasDups = false;
+    hasCsvDups = false;
 
     const selectedFile = document.getElementById('invoices_csv_file').files[0];
 
@@ -16,7 +16,7 @@ btn_check_dups_csv.addEventListener("click", async function (event) {
     reader.onload = (function() {
         return async function(e) {
 
-            const generatedSignatureSets = await performCSVSignatureGenerationAndUpdateUI();
+            const generatedSignatureSets = await performCSVSignatureGenerationAndUpdateUI(e);
             
             const response = await fetch(`${apiUrl}/api/Signatures/check`, {
                 headers: fetchApiKeyAndPrepareHeaders(),
@@ -33,7 +33,7 @@ btn_check_dups_csv.addEventListener("click", async function (event) {
 
 btn_send_sigs_csv.addEventListener("click", async function (event) {
 	event.preventDefault();
-    hasDups = false;
+    hasCsvDups = false;
 
     const selectedFile = document.getElementById('invoices_csv_file').files[0];
 
@@ -41,7 +41,7 @@ btn_send_sigs_csv.addEventListener("click", async function (event) {
 
     reader.onload = (function() {
         return async function(e) {
-            const generatedSignatureSets = await performCSVSignatureGenerationAndUpdateUI();
+            const generatedSignatureSets = await performCSVSignatureGenerationAndUpdateUI(e);
 
             const responseCheck = await fetch(`${apiUrl}/api/Signatures/check`, {
                 headers: fetchApiKeyAndPrepareHeaders(),
@@ -52,7 +52,7 @@ btn_send_sigs_csv.addEventListener("click", async function (event) {
             processCsvUploadResponse(responseCheck);
 
             setTimeout(async () => { // Given 0.5 sec for UI to update before confirm
-                if (hasDups) {
+                if (hasCsvDups) {
                     const isConfirmed = confirm("Pronađeni su duplikati. Da li ste sigurni da želite da nastavite?");
                     
                     if (!isConfirmed)
@@ -75,7 +75,7 @@ btn_send_sigs_csv.addEventListener("click", async function (event) {
     reader.readAsText(selectedFile);
 });
 
-async function performCSVSignatureGenerationAndUpdateUI() {
+async function performCSVSignatureGenerationAndUpdateUI(e) {
     const parseResult = Papa.parse(e.target.result);
             
     console.log('Parsirani sadrzaj:' + parseResult);
@@ -182,11 +182,11 @@ async function processCsvUploadOkResponse(response, isStoreAction) {
 
     responseData.forEach(sigSetResponse => {
         if (sigSetResponse.hasDuplicates) {
-            hasDups = true;
+            hasCsvDups = true;
         }
     });
 
-    if (hasDups) {
+    if (hasCsvDups) {
         result_message_csv.textContent = `Neka od faktura je bila predmet faktoringa. Proverite log iz konzole za detalje.`;
         result_message_csv.className = "result-error";
     } else {
