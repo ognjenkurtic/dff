@@ -37,14 +37,12 @@ public class CheckSignaturesAndStoreCommandHandler : IRequestHandler<CheckSignat
         foreach (var signatureSet in request.SignaturesSets)
         {
             var checkDuplicatesResponse = await _signaturesAgent.CheckSignatureSetForDuplicates(request.RequesterId, signatureSet);
+            
             results.Add(checkDuplicatesResponse);
 
-            if (checkDuplicatesResponse.HasDuplicates || checkDuplicatesResponse.OwnDuplicate)
-            {
-                // We do not store duplicates in the db because they are not going to be financed
-                // Db should contain only signatures of financed invoices
-                continue;
-            }
+            // It is ok to store even if duplicates are found since the factor might be financing invoices that are different
+            // just by invoice number for example. It is the responsibility of the factor to call the check duplicates endoint
+            // prior to deciding if they want to call this one.
 
             await _signaturesAgent.StoreSignatureSet(request.RequesterId, _mapper.Map<Signature>(signatureSet));
         }
