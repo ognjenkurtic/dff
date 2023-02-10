@@ -183,13 +183,17 @@ async function processCsvUploadOkResponse(response, isStoreAction) {
     responseData.forEach(sigSetResponse => {
         if (sigSetResponse.hasDuplicates) {
             hasCsvDups = true;
+            result_message_csv.textContent = `Neka od faktura je bila predmet faktoringa. Proverite log iz konzole za detalje.`;
+            result_message_csv.className = "result-error";
+        }
+        if(sigSetResponse.ownDuplicate) {
+            hasCsvDups = true;
+            result_message_csv.textContent = `Ova faktura je duplikat sa fakturom koju ste vi već podneli.`;
+            result_message_csv.className = "result-error";
         }
     });
 
-    if (hasCsvDups) {
-        result_message_csv.textContent = `Neka od faktura je bila predmet faktoringa. Proverite log iz konzole za detalje.`;
-        result_message_csv.className = "result-error";
-    } else {
+    if (!hasCsvDups) {
         result_message_csv.textContent = "Nijedna faktura nije bila predmet faktoringa.";
         result_message_csv.className = "result-success";
     }

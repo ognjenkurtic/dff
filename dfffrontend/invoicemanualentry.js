@@ -111,12 +111,12 @@ function cleanupSignaturesAndResult() {
 function getInputsFromEntryForm() {
     const matBrojDob = invoiceForm.elements["mat_broj_dobavljac"].value.trim();
     const matBrojKupac = invoiceForm.elements["mat_broj_kupac"].value.trim();
-    const brojFakture = invoiceForm.elements["broj_fakture"].value;
+    const brojFakture = invoiceForm.elements["broj_fakture"].value.trim();
     const datumIzdavanja = invoiceForm.elements["datum_izdavanja"].value;
     const datumValute = invoiceForm.elements["datum_valute"].value;
     const iznos = invoiceForm.elements["iznos"].value;
     const formatiranIznos = parseFloat(iznos).toFixed(2);
-    const sefId = invoiceForm.elements["sef_id"].value; // 766e3a6b-1be5-48ac-bad4-eb12ceba540c
+    const sefId = invoiceForm.elements["sef_id"].value.trim(); // 766e3a6b-1be5-48ac-bad4-eb12ceba540c
 
     const sefIdEntered = sefId !== undefined && sefId !== '';
 
@@ -290,7 +290,7 @@ async function processOkResponse(response, isStoreAction) {
         result.className = "result-error";
     } else if (signatureSetCheckResult.ownDuplicate) {
         hasDups = true;
-        result.textContent = `Ova faktura je duplikat sa fakturom koju ste vi već podneli`;
+        result.textContent = `Ova faktura je duplikat sa fakturom koju ste vi već podneli.`;
         result.className = "result-error";
     } else {
         hasDups = false;
