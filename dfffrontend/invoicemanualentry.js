@@ -21,6 +21,10 @@ btnChkDups.addEventListener("click", async function (event) {
 
     const generatedSignatureSet = await performSignatureGenerationAndUpdateUI();
 
+    if (!generatedSignatureSet) {
+        return null;
+    }
+
     const response = await fetch(`${apiUrl}/api/Signatures/check`, {
         headers: fetchApiKeyAndPrepareHeaders(),
     	method: 'POST',
@@ -35,6 +39,10 @@ btnSendSig.addEventListener("click", async function (event) {
 	event.preventDefault();
 
     const generatedSignatureSet = await performSignatureGenerationAndUpdateUI();
+
+    if (!generatedSignatureSet) {
+        return null;
+    }
 
     const responseCheck = await fetch(`${apiUrl}/api/Signatures/check`, {
         headers: fetchApiKeyAndPrepareHeaders(),
@@ -84,7 +92,7 @@ async function performSignatureGenerationAndUpdateUI() {
     ] = getInputsFromEntryForm();
 
     if (!matBrojDob && !sefId) {
-        return;
+        return null;
     }
 
     const generatedSignatureSet = await generateSignatures(matBrojDob, matBrojKupac, brojFakture, datumIzdavanja, datumValute, iznos, sefId);

@@ -9,11 +9,15 @@ public class CheckSignaturesDtoValidator : AbstractValidator<CheckSignaturesDto>
     {
         RuleFor(x => x.SignaturesSets)
             .NotNull()
-            .WithMessage("Bar jedan potpis mora biti poslat");
+            .WithMessage("Bar jedan set potpisa mora biti poslat");
         
         RuleFor(x => x.SignaturesSets)
             .NotEmpty()
-            .WithMessage("Bar jedan potpis mora biti poslat");
+            .WithMessage("Bar jedan set potpisa mora biti poslat");
+        
+        RuleForEach(x => x.SignaturesSets)
+            .NotNull()
+            .WithMessage("Set potpisa ne sme biti prazan");
 
         RuleForEach(x => x.SignaturesSets).ChildRules(signatureSet =>
             {

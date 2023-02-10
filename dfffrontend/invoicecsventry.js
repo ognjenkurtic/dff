@@ -17,6 +17,10 @@ btn_check_dups_csv.addEventListener("click", async function (event) {
         return async function(e) {
 
             const generatedSignatureSets = await performCSVSignatureGenerationAndUpdateUI(e);
+
+            if (generatedSignatureSets.length == 0) {
+                return null;
+            }
             
             const response = await fetch(`${apiUrl}/api/Signatures/check`, {
                 headers: fetchApiKeyAndPrepareHeaders(),
@@ -42,6 +46,10 @@ btn_send_sigs_csv.addEventListener("click", async function (event) {
     reader.onload = (function() {
         return async function(e) {
             const generatedSignatureSets = await performCSVSignatureGenerationAndUpdateUI(e);
+
+            if (generatedSignatureSets.length == 0) {
+                return null;
+            }
 
             const responseCheck = await fetch(`${apiUrl}/api/Signatures/check`, {
                 headers: fetchApiKeyAndPrepareHeaders(),
