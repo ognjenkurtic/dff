@@ -8,7 +8,7 @@ namespace dffbackend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[ApiKey]
+[FactoringCompanyApiKey]
 public class SignaturesController : BaseController
 {
     private readonly ILogger<SignaturesController> _logger;

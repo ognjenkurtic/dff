@@ -4,8 +4,10 @@ using dffbackend.Models;
 using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var  corsPolicyName = "_dffCorsPolicy";
 var builder = WebApplication.CreateBuilder(args);
@@ -37,7 +39,9 @@ builder.Services.AddFluentValidation(conf =>
 });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(ConfigureSwaggerGen);
+
 builder.Services.AddCors(options => 
 {
     options.AddPolicy(corsPolicyName, builder => 
@@ -83,3 +87,24 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+
+void ConfigureSwaggerGen(SwaggerGenOptions c)
+{
+    c.AddSecurityDefinition("X-Factor-API-Key", new OpenApiSecurityScheme
+    {
+        Description = "Example: \"X-Factor-API-Key {token}\"",
+        Name = "X-Factor-API-Key",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        { new OpenApiSecurityScheme { Reference = new OpenApiReference
+        {
+            Id = "X-Factor-API-Key",
+            Type = ReferenceType.SecurityScheme
+        }}, new List<string>() }
+    });
+}

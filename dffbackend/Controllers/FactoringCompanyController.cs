@@ -8,7 +8,7 @@ namespace dffbackend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[ApiKey]
+[AdminApiKey]
 public class FactoringCompanyController : BaseController
 {
     private readonly ILogger<FactoringCompanyController> _logger;
@@ -37,7 +37,6 @@ public class FactoringCompanyController : BaseController
         {
             Name = body.Name,
             Email = body.Email,
-            // TODO: Do we add api key this way?
             ApiKey = body.ApiKey
         });
 
@@ -64,7 +63,6 @@ public class FactoringCompanyController : BaseController
             Id = body.Id,
             Name = body.Name,
             Email = body.Email,
-            // TODO: Do we update api key this way?
             ApiKey = body.ApiKey
         });
 
