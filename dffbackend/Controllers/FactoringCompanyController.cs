@@ -1,6 +1,7 @@
 using System.Net;
 using dffbackend.BusinessLogic.FactoringCompanies.Commands;
 using dffbackend.BusinessLogic.FactoringCompanies.DTOs;
+using dffbackend.BusinessLogic.FactoringCompanies.Queries;
 using dffbackend.Filters;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,10 +20,24 @@ public class FactoringCompanyController : BaseController
     }
 
     /// <summary>
+    /// Get all factoring companies
+    /// </summary>
+    /// <response code="200">OkObject</response>
+    /// <response code="401">User not authorized</response>
+    [HttpGet]
+    [Route("")]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+    public async Task<IActionResult> GetAllFactoringCompanies()
+    {
+        var result = await Mediator.Send(new GetAllFactoringCompaniesQuery());
+        return Ok(result);
+    }
+
+    /// <summary>
     /// Creates factoring company
     /// </summary>
     /// <param name="body">CreateFactoringCompanyDto containing company details</param>
-    /// <response code="200">Ok</response>
     /// <response code="200">OkObject</response>
     /// <response code="400">Invalid input</response>
     /// <response code="401">User not authorized</response>
@@ -35,9 +50,7 @@ public class FactoringCompanyController : BaseController
     {
         var result = await Mediator.Send(new CreateFactoringCompanyCommand
         {
-            Name = body.Name,
-            Email = body.Email,
-            ApiKey = body.ApiKey
+            RequestBody = body
         });
 
         return Ok(result);
@@ -47,11 +60,10 @@ public class FactoringCompanyController : BaseController
     /// Update factoring company
     /// </summary>
     /// <param name="body">UpdateFactoringCompanyDto containing company details to update</param>
-    /// <response code="200">Ok</response>
     /// <response code="200">OkObject</response>
     /// <response code="400">Invalid input</response>
     /// <response code="401">User not authorized</response>
-    [HttpPost]
+    [HttpPut]
     [Route("update")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
@@ -60,10 +72,7 @@ public class FactoringCompanyController : BaseController
     {
         var result = await Mediator.Send(new UpdateFactoringCompanyCommand
         {
-            Id = body.Id,
-            Name = body.Name,
-            Email = body.Email,
-            ApiKey = body.ApiKey
+            RequestBody = body
         });
 
         return Ok(result);
@@ -73,7 +82,6 @@ public class FactoringCompanyController : BaseController
     /// Delete factoring company
     /// </summary>
     /// <param name="companyId">Id of the company to delete</param>
-    /// <response code="200">Ok</response>
     /// <response code="200">OkObject</response>
     /// <response code="400">Invalid input</response>
     /// <response code="401">User not authorized</response>

@@ -9,5 +9,6 @@ public class FactoringCompanyProfile : Profile
     public FactoringCompanyProfile()
     {
         CreateMap<CreateFactoringCompanyDto, FactoringCompany>();
+        CreateMap<FactoringCompany, FactoringCompanyDto>();
     }
 }

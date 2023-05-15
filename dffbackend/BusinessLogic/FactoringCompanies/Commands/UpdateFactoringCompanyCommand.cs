@@ -1,4 +1,5 @@
 using AutoMapper;
+using dffbackend.BusinessLogic.FactoringCompanies.DTOs;
 using dffbackend.BusinessLogic.Signatures.Agents;
 using dffbackend.Models;
 using MediatR;
@@ -8,13 +9,7 @@ namespace dffbackend.BusinessLogic.FactoringCompanies.Commands;
 
 public class UpdateFactoringCompanyCommand : IRequest
 {
-    public Guid Id { get; set; }
-
-    public string Name { get; set; }
-
-    public string Email { get; set; }
-
-    public string ApiKey { get; set; }
+    public UpdateFactoringCompanyDto RequestBody { get; set; }
 }
 
 public class UpdateFactoringCompanyCommandHandler : IRequestHandler<UpdateFactoringCompanyCommand>
@@ -37,18 +32,18 @@ public class UpdateFactoringCompanyCommandHandler : IRequestHandler<UpdateFactor
 
     public async Task<Unit> Handle(UpdateFactoringCompanyCommand request, CancellationToken cancellationToken)
     {
-        var existingCompany = await _dbContext.FactoringCompanies.FirstOrDefaultAsync(c => c.Id == request.Id);
+        var existingCompany = await _dbContext.FactoringCompanies.FirstOrDefaultAsync(c => c.Id == request.RequestBody.Id);
 
         if (existingCompany is null)
         {
             // TODO: Implement custom exceptions or agree on the way we return error results
-            _logger.LogError($"Kompanija sa ID-em {request.Id} nije pronađena.");
-            throw new Exception($"Kompanija sa ID-em {request.Id} nije pronađena.");
+            _logger.LogError($"Kompanija sa ID-em {request.RequestBody.Id} nije pronađena.");
+            throw new Exception($"Kompanija sa ID-em {request.RequestBody.Id} nije pronađena.");
         }
 
-        existingCompany.Name = !string.IsNullOrEmpty(request.Name) ? request.Name : existingCompany.Name;
-        existingCompany.Email = !string.IsNullOrEmpty(request.Email) ? request.Email : existingCompany.Email;
-        existingCompany.ApiKey = !string.IsNullOrEmpty(request.ApiKey) ? request.ApiKey : existingCompany.ApiKey;
+        existingCompany.Name = !string.IsNullOrEmpty(request.RequestBody.Name) ? request.RequestBody.Name : existingCompany.Name;
+        existingCompany.Email = !string.IsNullOrEmpty(request.RequestBody.Email) ? request.RequestBody.Email : existingCompany.Email;
+        existingCompany.ApiKey = !string.IsNullOrEmpty(request.RequestBody.ApiKey) ? request.RequestBody.ApiKey : existingCompany.ApiKey;
 
         _dbContext.Entry(existingCompany).State = EntityState.Modified;
         await _dbContext.SaveChangesAsync();

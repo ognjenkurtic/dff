@@ -1,4 +1,5 @@
 using AutoMapper;
+using dffbackend.BusinessLogic.FactoringCompanies.DTOs;
 using dffbackend.BusinessLogic.Signatures.Agents;
 using dffbackend.Models;
 using MediatR;
@@ -8,11 +9,7 @@ namespace dffbackend.BusinessLogic.FactoringCompanies.Commands;
 
 public class CreateFactoringCompanyCommand : IRequest<Guid>
 {
-    public string Name { get; set; }
-
-    public string Email { get; set; }
-
-    public string ApiKey { get; set; }
+    public CreateFactoringCompanyDto RequestBody { get; set; }
 }
 
 public class CreateFactoringCompanyCommandHandler : IRequestHandler<CreateFactoringCompanyCommand, Guid>
@@ -35,14 +32,14 @@ public class CreateFactoringCompanyCommandHandler : IRequestHandler<CreateFactor
 
     public async Task<Guid> Handle(CreateFactoringCompanyCommand request, CancellationToken cancellationToken)
     {
-        if (await _dbContext.FactoringCompanies.AnyAsync(c => c.Email == request.Email.Trim()))
+        if (await _dbContext.FactoringCompanies.AnyAsync(c => c.Email == request.RequestBody.Email.Trim()))
         {
             // TODO: Implement custom exceptions or agree on the way we return error results
-            _logger.LogError($"Kompanija {request.Name} već postoji.");
-            throw new Exception($"Kompanija {request.Name} već postoji.");
+            _logger.LogError($"Kompanija {request.RequestBody.Name} već postoji.");
+            throw new Exception($"Kompanija {request.RequestBody.Name} već postoji.");
         }
 
-        var companyToAdd = _mapper.Map<FactoringCompany>(request);
+        var companyToAdd = _mapper.Map<FactoringCompany>(request.RequestBody);
 
         await _dbContext.FactoringCompanies.AddAsync(companyToAdd);
         await _dbContext.SaveChangesAsync();

@@ -42,6 +42,6 @@ public class FactoringCompanyApiKeyAttribute : Attribute, IAuthorizationFilter
 
         var dbContext = context.RequestServices.GetService(typeof(DffContext)) as DffContext;
 
-        return dbContext.FactoringCompanies.FirstOrDefault(fc => fc.ApiKey == submittedApiKey);
+        return dbContext.FactoringCompanies.FirstOrDefault(fc => fc.ApiKey == submittedApiKey && !fc.IsDeleted.Value);
     }
 }
