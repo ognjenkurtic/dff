@@ -26,7 +26,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://dff.finspot.rs/api/Signatures/check",
+					"raw": "https://faktorprovera.pks.rs/api/Signatures/check",
 					"protocol": "https",
 					"host": [
 						"dff",
@@ -63,7 +63,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://dff.finspot.rs/api/Signatures/checkandstore",
+					"raw": "https://faktorprovera.pks.rs/api/Signatures/checkandstore",
 					"protocol": "https",
 					"host": [
 						"dff",

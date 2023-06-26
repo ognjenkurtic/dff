@@ -28,7 +28,7 @@ public class SignaturesController : BaseController
     /// <response code="401">User not authorized</response>
     [HttpPost]
     [Route("check")]
-    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<CheckDuplicatesResponseDto>), (int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
     public async Task<IActionResult> CheckSignatures([FromBody] CheckSignaturesDto body)
@@ -52,7 +52,7 @@ public class SignaturesController : BaseController
     /// <response code="401">User not authorized</response>
     [HttpPost]
     [Route("checkandstore")]
-    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<CheckDuplicatesResponseDto>), (int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
     public async Task<IActionResult> CheckSignaturesAndStore([FromBody] CheckSignaturesDto body)
