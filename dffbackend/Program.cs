@@ -17,7 +17,7 @@ builder.Host.UseSerilog((ctx, lc) => lc
         .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
         .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Information)
         .Enrich.FromLogContext()
-        .WriteTo.File("Logs/dffapp.txt", rollingInterval: RollingInterval.Day)
+        .WriteTo.File("Logs/whisper.txt", rollingInterval: RollingInterval.Day)
         .WriteTo.Console()
         .ReadFrom.Configuration(ctx.Configuration));
 
@@ -63,18 +63,17 @@ using (var scope = app.Services.CreateScope())
     dataContext.Database.Migrate();
 }
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-        {
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "dff-api v1");
-            c.RoutePrefix = string.Empty;
-            c.EnableFilter();
-        });
-}
+app.UseSwagger(c =>
+    {
+        c.RouteTemplate = "api/swagger/{documentName}/swagger.json";
+    });
 
+app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/api/swagger/v1/swagger.json", "Whisper Api v1");
+        c.RoutePrefix = "api";
+        c.EnableFilter();
+    });
 
 app.UseCors(corsPolicyName);
 
