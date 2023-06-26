@@ -15,7 +15,6 @@ public class FactoringCompany
     [Required]
     public string Email { get; set; }
 
-    // TODO: convert to Guid in PROD
     [Required]
     public string ApiKey { get; set; }
 

@@ -1,4 +1,4 @@
-const apiUrl = "https://dff.finspot.rs";
+const apiUrl = "https://faktorprovera.pks.rs";
 
 const authForm = document.getElementById("auth_data");
 

@@ -34,7 +34,6 @@ async function generateSignatures(matBrojDob, matBrojKupac, brojFakture, datumIz
 }
 
 async function hashCode(str) {
-    console.log(`Applying SHA-256 on the following string: ` + str)
     const textAsBuffer = new TextEncoder().encode(str);
     const hashBuffer = await window.crypto.subtle.digest('SHA-256', textAsBuffer);
     const hashArray = Array.from(new Uint8Array(hashBuffer))

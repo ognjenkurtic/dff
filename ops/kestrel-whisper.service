@@ -1,0 +1,23 @@
+[Unit]
+Description=.NET Core Web Api for the SigmaRisk application
+
+[Service]
+WorkingDirectory=/var/www/faktorprovera.pks.rs/backend
+ExecStart=/usr/bin/dotnet /var/www/faktorprovera.pks.rs/backend/dffbackend.dll
+Restart=always
+# Restart service after 10 seconds if it crashes
+RestartSec=10
+KillSignal=SIGINT
+SyslogIdentifier=whisper
+User=root
+Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
+Environment=ConnectionStrings__Mysql=Server=localhost;Database=whisper;User=<db user>;Password=<db pass>;
+Environment=AdminApiKey=<admin_api_key>
+
+# How many seconds to wait for the app to shut down after it receives the initial interrupt signal.
+# If the app doesn't shut down in this period, SIGKILL is issued to terminate the app.
+# The default timeout for most distributions is 90 seconds.
+TimeoutStopSec=90
+
+[Install]
+WantedBy=multi-user.target
