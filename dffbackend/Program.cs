@@ -9,7 +9,7 @@ using Serilog;
 using Serilog.Events;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-var  corsPolicyName = "_dffCorsPolicy";
+var corsPolicyName = "_dffCorsPolicy";
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((ctx, lc) => lc
@@ -42,9 +42,9 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(ConfigureSwaggerGen);
 
-builder.Services.AddCors(options => 
+builder.Services.AddCors(options =>
 {
-    options.AddPolicy(corsPolicyName, builder => 
+    options.AddPolicy(corsPolicyName, builder =>
     {
         builder
             .AllowAnyOrigin()
