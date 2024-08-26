@@ -10,19 +10,19 @@ namespace dffbackend.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "Signature5",
+            migrationBuilder.AddColumn<DateTime>(
+                name: "CreationDate",
                 table: "Signatures",
-                type: "longtext",
-                nullable: true)
-                .Annotation("MySql:CharSet", "utf8mb4");
+                type: "DateTime",
+                nullable: false)
+                .Annotation("MySql:Index", "CreationDateIndex");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Signature5",
+                name: "CreationDate",
                 table: "Signatures");
         }
     }

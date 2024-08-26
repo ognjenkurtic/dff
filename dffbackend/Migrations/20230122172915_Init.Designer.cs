@@ -77,6 +77,9 @@ namespace dffbackend.Migrations
 
                     b.Property<string>("Signature4")
                         .HasColumnType("longtext");
+                    
+                    b.Property<string>("Signature5")
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 

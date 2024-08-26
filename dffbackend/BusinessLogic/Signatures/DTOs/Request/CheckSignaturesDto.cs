@@ -16,4 +16,5 @@ public class SignatureSetDto
     public string Signature4 { get; set; }
     
     public string Signature5 { get; set; }
+    public DateTime CreationDate { get; set; }
 }
