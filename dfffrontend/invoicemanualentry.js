@@ -115,6 +115,7 @@ async function performSignatureGenerationAndUpdateUI() {
     datumValute,
     iznos,
     sefId,
+    formattedDate,
   ] = getInputsFromEntryForm();
 
   if (!matBrojDob && !sefId) {
@@ -128,7 +129,8 @@ async function performSignatureGenerationAndUpdateUI() {
     datumIzdavanja,
     datumValute,
     iznos,
-    sefId
+    sefId,
+    formattedDate
   );
 
   showSignaturesForManualEntry(generatedSignatureSet);
@@ -159,6 +161,9 @@ function getInputsFromEntryForm() {
   const iznos = invoiceForm.elements["iznos"].value;
   const formatiranIznos = parseFloat(iznos).toFixed(2);
   const sefId = invoiceForm.elements["sef_id"].value.trim(); // 766e3a6b-1be5-48ac-bad4-eb12ceba540c
+
+  const currentDate = new Date();
+  const formattedDate = currentDate.toISOString();
 
   const sefIdEntered = sefId !== undefined && sefId !== "";
 
@@ -217,6 +222,7 @@ function getInputsFromEntryForm() {
     datumValute,
     formatiranIznos,
     sefId,
+    formattedDate,
   ];
 }
 
