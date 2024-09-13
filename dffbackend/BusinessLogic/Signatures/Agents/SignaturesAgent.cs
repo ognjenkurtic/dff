@@ -79,6 +79,7 @@ public class SignaturesAgent : ISignaturesAgent
     public async Task StoreSignatureSet(string requesterId, Signature signatureSet)
     {
         signatureSet.FactoringCompanyId = new Guid(requesterId);
+        signatureSet.CreationDate = DateTime.Now;
         await _dbContext.Signatures.AddAsync(signatureSet);
     }
 
