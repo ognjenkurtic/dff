@@ -42,8 +42,9 @@
                     <span class="api-subtitle">Potrebno je da unesete jedinstveni API ključ</span>
                     <form id="auth_data">
                         <p>
-                            <label class="tooltip">Vaš API ključ <span class="tooltiptext"> Potrebno je da uneste jedinstveni Api ključ </span></label>
-                            <input type="text" name="api_key">
+                            <label class="tooltip">Vaš API ključ <span class="tooltiptext"> Potrebno je da uneste
+                                    jedinstveni Api ključ </span></label>
+                            <input type="text" name="api_key" id="api_key">
                         </p>
                     </form>
                 </section>
@@ -65,38 +66,45 @@
                         <form id="invoice_data">
                             <div class="form-section">
                                 <p>
-                                    <label class="tooltip">Matični broj dobavljača <span class="tooltiptext"> Potrebno je da uneste matični broj dovaljača sa fakture </span></label>
+                                    <label class="tooltip">Matični broj dobavljača <span class="tooltiptext"> Potrebno
+                                            je da uneste matični broj dovaljača sa fakture </span></label>
                                     <input type="text" name="mat_broj_dobavljac">
                                 </p>
 
                                 <p>
-                                    <label class="tooltip">Matični broj kupca <span class="tooltiptext"> Potrebno je da uneste matični broj kupca sa fakture </span></label>
+                                    <label class="tooltip">Matični broj kupca <span class="tooltiptext"> Potrebno je da
+                                            uneste matični broj kupca sa fakture </span></label>
                                     <input type="text" name="mat_broj_kupac">
                                 </p>
                                 <p>
-                                    <label class="tooltip">Broj fakture <span class="tooltiptext"> Potrebno je da uneste broj fakture </span></label>
+                                    <label class="tooltip">Broj fakture <span class="tooltiptext"> Potrebno je da uneste
+                                            broj fakture </span></label>
                                     <input type="text" name="broj_fakture">
                                 </p>
                             </div>
 
                             <div class="form-section">
                                 <p>
-                                    <label class="tooltip">Datum izdavanja <span class="tooltiptext"> Potrebno je da uneste datum izdavanja fakture </span></label>
+                                    <label class="tooltip">Datum izdavanja <span class="tooltiptext"> Potrebno je da
+                                            uneste datum izdavanja fakture </span></label>
                                     <input type="date" name="datum_izdavanja">
                                 </p>
 
                                 <p>
-                                    <label class="tooltip">Datum valute <span class="tooltiptext"> Potrebno je da uneste datum valute fakture </span></label>
+                                    <label class="tooltip">Datum valute <span class="tooltiptext"> Potrebno je da uneste
+                                            datum valute fakture </span></label>
                                     <input type="date" name="datum_valute">
                                 </p>
                                 <p>
-                                    <label class="tooltip">Iznos <span class="tooltiptext"> Potrebno je da uneste iznos fakture </span></label>
+                                    <label class="tooltip">Iznos <span class="tooltiptext"> Potrebno je da uneste iznos
+                                            fakture </span></label>
                                     <input type="number" name="iznos">
                                 </p>
                             </div>
                             <div class="form-section">
                                 <p>
-                                    <label class="tooltip">SEF id <span class="tooltiptext"> Potrebno je da uneste jedinstveni SEF ID fakture </span></label>
+                                    <label class="tooltip">SEF id <span class="tooltiptext"> Potrebno je da uneste
+                                            jedinstveni SEF ID fakture </span></label>
                                     <input type="text" name="sef_id">
                                 </p>
                             </div>
@@ -151,6 +159,8 @@
             </div>
         </div>
     </div>
+
+
     <script src="papaparse.js"></script>
     <script src="invoicemanualentry.js"></script>
     <script src="invoicecsventry.js"></script>
