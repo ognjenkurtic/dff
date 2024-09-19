@@ -161,18 +161,6 @@
     </div>
 
 
-    <script>
-        // Storing api key to local storage 
-        const apiKeyInput = document.getElementById("api_key");
-
-        apiKeyInput.addEventListener("change", (e) => {
-            localStorage.setItem("api_key", e.target.value);
-        })
-
-        // Geting api key to local storage and seting for input value
-        apiKeyInput.value = localStorage.getItem('api_key')
-    </script>
-
     <script src="papaparse.js"></script>
     <script src="invoicemanualentry.js"></script>
     <script src="invoicecsventry.js"></script>
