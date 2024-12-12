@@ -133,6 +133,8 @@ function getInputsFromEntryForm() {
             alert('SEF ID mora biti validan GUID');
             return [ null ];
         }
+
+        return ["", "", "", "", "", "", sefId];
     } else {
         if (matBrojDob.length != 8 || matBrojKupac.length != 8) {
             alert('Matični broj mora imati 8 brojeva');
@@ -173,9 +175,9 @@ function getInputsFromEntryForm() {
             alert('Datum izdavanja mora biti manji od datuma valute');
             return [ null ];
         }
-    }
 
-    return [matBrojDob, matBrojKupac, brojFakture, datumIzdavanja, datumValute, formatiranIznos, sefId];
+        return [matBrojDob, matBrojKupac, brojFakture, datumIzdavanja, datumValute, formatiranIznos, ""];
+    }
 }
 
 function showSignaturesForManualEntry(signatures) {
