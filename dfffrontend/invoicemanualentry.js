@@ -16,6 +16,10 @@ let hasDups = false;
 const apiKeyInput = document.getElementById("api_key");
 apiKeyInput.value = localStorage.getItem("api_key");
 
+apiKeyInput.addEventListener("click", async function (event) {
+	localStorage.setItem("api_key", "");
+});
+
 // Regular expression to check if string is a valid UUID
 const regexExp =
   /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/i;

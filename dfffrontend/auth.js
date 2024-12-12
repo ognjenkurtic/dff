@@ -3,10 +3,12 @@ const apiUrl = "http://localhost:5000";
 const authForm = document.getElementById("auth_data");
 
 function fetchApiKeyAndPrepareHeaders() {
-  const apiKey = authForm.elements["api_key"].value;
+  let apiKey = localStorage.getItem("api_key");
 
-  // Storing api key to local storage
-  localStorage.setItem("api_key", apiKey);
+  if (!apiKey) {
+    apiKey = authForm.elements["api_key"].value;
+    localStorage.setItem("api_key", apiKey);
+  }
 
   const requestHeaders = new Headers();
   requestHeaders.append("Content-Type", "application/json");
