@@ -23,13 +23,6 @@ public class CheckSignaturesCommandHandler : IRequestHandler<CheckSignaturesComm
 
     public async Task<List<CheckDuplicatesResponseDto>> Handle(CheckSignaturesCommand request, CancellationToken cancellationToken)
     {
-        var result = new List<CheckDuplicatesResponseDto>();
-        
-        foreach (var signatureSet in request.SignaturesSets)
-        {
-            result.Add(await _signaturesAgent.CheckSignatureSetForDuplicates(request.RequesterId, signatureSet));   
-        }
-
-        return result;
+        return await _signaturesAgent.CheckSignatureSetsForDuplicates(request.RequesterId, request.SignaturesSets);
     }
 }

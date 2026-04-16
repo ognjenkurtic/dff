@@ -32,23 +32,18 @@ public class CheckSignaturesAndStoreCommandHandler : IRequestHandler<CheckSignat
 
     public async Task<List<CheckDuplicatesResponseDto>> Handle(CheckSignaturesAndStoreCommand request, CancellationToken cancellationToken)
     {
-        var results = new List<CheckDuplicatesResponseDto>();
+        var results = await _signaturesAgent.CheckSignatureSetsForDuplicates(request.RequesterId, request.SignaturesSets);
 
+        // It is ok to store even if duplicates are found since the factor might be financing invoices that are different
+        // just by invoice number for example. It is the responsibility of the factor to call the check duplicates endoint
+        // prior to deciding if they want to call this one.
         foreach (var signatureSet in request.SignaturesSets)
         {
-            var checkDuplicatesResponse = await _signaturesAgent.CheckSignatureSetForDuplicates(request.RequesterId, signatureSet);
-            
-            results.Add(checkDuplicatesResponse);
-
-            // It is ok to store even if duplicates are found since the factor might be financing invoices that are different
-            // just by invoice number for example. It is the responsibility of the factor to call the check duplicates endoint
-            // prior to deciding if they want to call this one.
-
             await _signaturesAgent.StoreSignatureSet(request.RequesterId, _mapper.Map<Signature>(signatureSet));
         }
 
         await _dbContext.SaveChangesAsync();
-        
+
         return results;
     }
 }
