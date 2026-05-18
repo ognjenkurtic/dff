@@ -12,6 +12,11 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 var corsPolicyName = "_dffCorsPolicy";
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestBodySize = 10 * 1024 * 1024;
+});
+
 builder.Host.UseSerilog((ctx, lc) => lc
         .MinimumLevel.Debug()
         .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
