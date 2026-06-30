@@ -36,7 +36,7 @@ Applying SHA-256 on the following string: 12322233312342
 
 1. Update `auth.js`:
 
-   Set apiUrl to the same localhost URL from the first step:
+   Set apiUrl to the same URL from the first step:
 
    `const apiUrl = "http://localhost:5000";`
 
@@ -53,3 +53,47 @@ Applying SHA-256 on the following string: 12322233312342
    `http://localhost:5000/api/index.html`
 
    Replace http://localhost:5000 with the localhost URL you set earlier if it's different.
+
+# Publishing a Release (Ubuntu)
+
+The backend is published as a **framework-dependent** build targeting **`linux-x64`**.
+This means the Ubuntu server must have the **ASP.NET Core 6 runtime** installed
+(the runtime is not bundled with the output).
+
+0. Bump  version in the .csproj file
+
+1. From the project root (`dffbackend/`), run:
+
+   ```bash
+   dotnet publish -c Release
+   ```
+
+2. The published files are written to:
+
+   ```
+   bin/Release/net6.0/publish/
+   ```
+
+3. Download a backup of the /var/www/faktorprovera.pks.rs folder from the server locally
+
+4. Deploy the **entire contents** of `bin/Release/net6.0/publish/` to the Ubuntu server.
+
+5. Deploy frontend files to the server. Make sure `auth.js` set for correct environment.
+
+   `const apiUrl = "http://localhost:5000";` - LOCAL
+   `const apiUrl = "https://dff.finspot.rs";` - UAT
+   `const apiUrl = "https://faktorprovera.pks.rs";` - PROD
+
+
+6. On the server, restart the backend app:
+
+   ```
+   systemctl restart kestrel-whisper.service
+   ```
+
+   Deployed `appsettings.json` should fetch the correct values from the systemd defined env vars.
+
+7. git tag <version number>
+
+
+
